@@ -1,11 +1,17 @@
-(function() {
+(function () {
+
     var drag_add_link, global, height, update, width,
-        __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+        __indexOf = Array.prototype.indexOf || function (item) {
+            for (var i = 0, l = this.length; i < l; i++) {
+                if (i in this && this[i] === item) return i;
+            }
+            return -1;
+        };
 
     width = window.innerWidth - 10;
 
-    height = window.innerHeight -20;
-
+    height = window.innerHeight - 20;
+    window.global = global;
     /* SELECTION - store the selected node
     */
 
@@ -16,22 +22,23 @@
         selection: null
     };
 
-    window.main = (function() {
+    window.main = (function () {
         /* get data from the DB
-        */    return db.get_or_create(function(graph) {
+        */
+        return db.get_graph(function (graph) {
             var container, library, svg, toolbar;
             global.graph = graph;
-            global.graph.objectify = function() {
+            global.graph.objectify = function (graph) {
                 /* resolve node IDs (not optimized at all!)
                 */
                 var l, n, _i, _len, _ref, _results;
-                _ref = global.graph.links;
+                _ref = graph.links;
                 _results = [];
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                     l = _ref[_i];
-                    _results.push((function() {
+                    _results.push((function () {
                         var _j, _len2, _ref2, _results2;
-                        _ref2 = global.graph.nodes;
+                        _ref2 = graph.nodes;
                         _results2 = [];
                         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
                             n = _ref2[_j];
@@ -51,24 +58,24 @@
                 }
                 return _results;
             };
-            global.graph.remove = function(condemned) {
+            global.graph.remove = function (condemned) {
                 if (!condemned.editable) return;
                 /* remove the given node or link from the graph, also deleting dangling links if a node is removed
                 */
                 if (__indexOf.call(global.graph.nodes, condemned) >= 0) {
-                    global.graph.nodes = global.graph.nodes.filter(function(n) {
+                    global.graph.nodes = global.graph.nodes.filter(function (n) {
                         return n !== condemned;
                     });
-                    return global.graph.links = global.graph.links.filter(function(l) {
+                    return global.graph.links = global.graph.links.filter(function (l) {
                         return l.source.id !== condemned.id && l.target.id !== condemned.id;
                     });
                 } else if (__indexOf.call(global.graph.links, condemned) >= 0) {
-                    return global.graph.links = global.graph.links.filter(function(l) {
+                    return global.graph.links = global.graph.links.filter(function (l) {
                         return l !== condemned;
                     });
                 }
             };
-            global.graph.add_node = function(type) {
+            global.graph.add_node = function (type) {
                 var n;
                 n = {
                     id: global.graph.last_index++,
@@ -80,7 +87,7 @@
                 global.graph.nodes.push(n);
                 return n;
             };
-            global.graph.add_link = function(source, target) {
+            global.graph.add_link = function (source, target) {
                 /* avoid links to self
                 */
                 var l, link, _i, _len, _ref;
@@ -100,13 +107,13 @@
                 global.graph.links.push(l);
                 return l;
             };
-            global.graph.serialize = function() {
+            global.graph.serialize = function () {
                 /* PERSISTENCE - return a copy of the graph, with redundancies (whole nodes in links pointers) removed. also include the last_index property, to persist it also
                 */
                 var l;
                 return {
                     nodes: global.graph.nodes,
-                    links: (function() {
+                    links: (function () {
                         var _i, _len, _ref, _results;
                         _ref = global.graph.links;
                         _results = [];
@@ -123,7 +130,18 @@
                     last_index: global.graph.last_index
                 };
             };
-            global.graph.objectify();
+            global.graph.objectify(global.graph);
+
+            // db.on_gun_update(rerender)
+
+            // function rerender(graph) {
+            //     debugger;
+            //     global.graph.nodes = graph.nodes;
+            //     global.graph.links = graph.links;
+            //     global.graph.objectify(graph);
+            //     // update();
+            // }
+
             /* create the SVG
             */
             svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
@@ -133,7 +151,7 @@
             */
             container = svg.append('g');
 
-            container.call(d3.behavior.zoom().scaleExtent([0.5, 8]).on('zoom', (function() {
+            container.call(d3.behavior.zoom().scaleExtent([0.5, 8]).on('zoom', (function () {
                 return global.vis.attr('transform', "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
             })));
             global.vis = container.append('g');
@@ -141,9 +159,10 @@
             */
             /* WARNING rect size is huge but not infinite. this is a dirty hack
             */
-            global.vis.append('rect').attr('class', 'overlay').attr('x', -500000).attr('y', -500000).attr('width', 1000000).attr('height', 1000000).on('click', (function(d) {
+            global.vis.append('rect').attr('class', 'overlay').attr('x', -500000).attr('y', -500000).attr('width', 1000000).attr('height', 1000000).on('click', (function (d) {
                 /* SELECTION
-                */        global.selection = null;
+                */
+                global.selection = null;
                 d3.selectAll('.node').classed('selected', false);
                 return d3.selectAll('.link').classed('selected', false);
             }));
@@ -152,42 +171,44 @@
             global.colorify = d3.scale.category10();
             /* initialize the force layout
             */
-            global.force = d3.layout.force().size([width, height]).charge(-400).linkDistance(60).on('tick', (function() {
+            global.force = d3.layout.force().size([width, height]).charge(-400).linkDistance(60).on('tick', (function () {
                 /* update nodes and links
-                */        global.vis.selectAll('.node').attr('transform', function(d) {
+                */
+                global.vis.selectAll('.node').attr('transform', function (d) {
                     return "translate(" + d.x + "," + d.y + ")";
                 });
-                return global.vis.selectAll('.link').attr('x1', function(d) {
+                return global.vis.selectAll('.link').attr('x1', function (d) {
                     return d.source.x;
-                }).attr('y1', function(d) {
+                }).attr('y1', function (d) {
                     return d.source.y;
-                }).attr('x2', function(d) {
+                }).attr('x2', function (d) {
                     return d.target.x;
-                }).attr('y2', function(d) {
+                }).attr('y2', function (d) {
                     return d.target.y;
                 });
             }));
             /* DRAG
             */
-            global.drag = global.force.drag().on('dragstart', function(d) {
+            global.drag = global.force.drag().on('dragstart', function (d) {
                 return d.fixed = true;
-            }).on('dragend', function() {
-                return db.store(global.graph.serialize());
+            }).on('dragend', function () {
+                return db.store_graph(global.graph.serialize());
             });
             /* DELETION - pressing DEL deletes the selection
             */
-            d3.select(window).on('keydown', function() {
+            d3.select(window).on('keydown', function () {
                 if (d3.event.keyCode === 46) {
                     if (global.selection != null) {
-                        debugger;
                         global.graph.remove(global.selection);
                         global.selection = null;
                         update();
-                        return db.store(global.graph.serialize());
+                        return db.store_graph(global.graph.serialize());
                     }
                 }
             });
             update();
+
+
             /* TOOLBAR
             */
             toolbar = $("<div class='toolbar'></div>");
@@ -197,20 +218,20 @@
             toolbar.append($("<svg\n    class='tool'\n    data-tool='add_link'\n    xmlns='http://www.w3.org/2000/svg'\n    version='1.1'\n    width='32'\n    height='32'\n    viewBox='0 0 128 128'>\n<g transform='translate(557.53125,-356.22543)'>\n    <g transform='translate(20,0)'>\n      <path\n         d='m -480.84375,360 c -15.02602,0 -27.375,12.31773 -27.375,27.34375 0,4.24084 1.00221,8.28018 2.75,11.875 l -28.875,28.875 c -3.59505,-1.74807 -7.6338,-2.75 -11.875,-2.75 -15.02602,0 -27.34375,12.34898 -27.34375,27.375 0,15.02602 12.31773,27.34375 27.34375,27.34375 15.02602,0 27.375,-12.31773 27.375,-27.34375 0,-4.26067 -0.98685,-8.29868 -2.75,-11.90625 L -492.75,411.96875 c 3.60156,1.75589 7.65494,2.75 11.90625,2.75 15.02602,0 27.34375,-12.34898 27.34375,-27.375 C -453.5,372.31773 -465.81773,360 -480.84375,360 z m 0,14 c 7.45986,0 13.34375,5.88389 13.34375,13.34375 0,7.45986 -5.88389,13.375 -13.34375,13.375 -7.45986,0 -13.375,-5.91514 -13.375,-13.375 0,-7.45986 5.91514,-13.34375 13.375,-13.34375 z m -65.375,65.34375 c 7.45986,0 13.34375,5.91514 13.34375,13.375 0,7.45986 -5.88389,13.34375 -13.34375,13.34375 -7.45986,0 -13.34375,-5.88389 -13.34375,-13.34375 0,-7.45986 5.88389,-13.375 13.34375,-13.375 z'\n      />\n      <path\n         d='m -484.34375,429.25 c -1.95543,0.19978 -3.60373,2.03442 -3.59375,4 l 0,12.40625 -12.40625,0 c -2.09434,2.1e-4 -3.99979,1.90566 -4,4 l 0,10 c -0.007,0.1353 -0.007,0.27095 0,0.40625 0.19978,1.95543 2.03442,3.60373 4,3.59375 l 12.40625,0 0,12.4375 c 2.1e-4,2.09434 1.90566,3.99979 4,4 l 10,0 c 2.09434,-2.1e-4 3.99979,-1.90566 4,-4 l 0,-12.4375 12.4375,0 c 2.09434,-2.1e-4 3.99979,-1.90566 4,-4 l 0,-10 c -2.1e-4,-2.09434 -1.90566,-3.99979 -4,-4 l -12.4375,0 0,-12.40625 c -2.1e-4,-2.09434 -1.90566,-3.99979 -4,-4 l -10,0 c -0.1353,-0.007 -0.27095,-0.007 -0.40625,0 z'\n      />\n    </g>\n  </g>\n</svg>"));
             library = $("<div class='library'></div></div>");
             toolbar.append(library);
-            ['X', 'Y', 'Z', 'W'].forEach(function(type) {
+            ['X', 'Y', 'Z', 'W'].forEach(function (type) {
                 var new_btn;
                 new_btn = $("<svg width='42' height='42'>\n    <g class='node'>\n        <circle\n            cx='21'\n            cy='21'\n            r='18'\n            stroke='" + (global.colorify(type)) + "'\n            fill='" + (d3.hcl(global.colorify(type)).brighter(3)) + "'\n        />\n    </g>\n</svg>");
-                new_btn.bind('click', function() {
+                new_btn.bind('click', function () {
                     global.graph.add_node(type);
                     update();
-                    return db.store(global.graph.serialize());
+                    return db.store_graph(global.graph.serialize());
                 });
                 library.append(new_btn);
                 return library.hide();
             });
             global.tool = 'pointer';
             global.new_link_source = null;
-            global.vis.on('mousemove.add_link', (function(d) {
+            global.vis.on('mousemove.add_link', (function (d) {
                 /* check if there is a new link in creation
                 */
                 var p;
@@ -220,13 +241,13 @@
                     p = d3.mouse(global.vis.node());
                     return global.drag_link.attr('x1', global.new_link_source.x).attr('y1', global.new_link_source.y).attr('x2', p[0]).attr('y2', p[1]);
                 }
-            })).on('mouseup.add_link', (function(d) {
+            })).on('mouseup.add_link', (function (d) {
                 global.new_link_source = null;
                 /* remove the draggable link representation, if exists
                 */
                 if (global.drag_link != null) return global.drag_link.remove();
             }));
-            d3.selectAll('.tool').on('click', function() {
+            d3.selectAll('.tool').on('click', function () {
                 var new_tool, nodes;
                 d3.selectAll('.tool').classed('active', false);
                 d3.select(this).classed('active', true);
@@ -256,13 +277,13 @@
             });
             /* PERSISTENCE - store the graph every second, to avoid missing the force layout updates on nodes' position
             */
-            return setInterval((function() {
-                return db.store(global.graph.serialize());
-            }), 1000);
+            // return setInterval((function () {
+            //     return db.store_graph(global.graph.serialize());
+            // }), 2000);
         });
     });
 
-    update = function() {
+    update = function () {
         /* update the layout
         */
         var links, new_nodes, nodes;
@@ -275,30 +296,32 @@
         */
         /* dragged nodes become fixed
         */
-        nodes = global.vis.selectAll('.node').data(global.graph.nodes, function(d) {
+        nodes = global.vis.selectAll('.node').data(global.graph.nodes, function (d) {
             return d.id;
         });
-        new_nodes = nodes.enter().append('g').attr('class', 'node').on('click', (function(d) {
+        new_nodes = nodes.enter().append('g').attr('class', 'node').on('click', (function (d) {
             /* SELECTION
-            */      global.selection = d;
-            d3.selectAll('.node').classed('selected', function(d2) {
+            */
+            global.selection = d;
+            d3.selectAll('.node').classed('selected', function (d2) {
                 return d2 === d;
             });
             return d3.selectAll('.link').classed('selected', false);
         }));
-        links = global.vis.selectAll('.link').data(global.graph.links, function(d) {
+        links = global.vis.selectAll('.link').data(global.graph.links, function (d) {
             return "" + d.source.id + "->" + d.target.id;
         });
-        links.enter().insert('line', '.node').attr('class', 'link').attr('stroke', function(d) {
+        links.enter().insert('line', '.node').attr('class', 'link').attr('stroke', function (d) {
             if (d.editable) {
                 return 'gray';
             } else {
                 return '#B52D0C';
             }
-        }).on('click', (function(d) {
+        }).on('click', (function (d) {
             /* SELECTION
-            */      global.selection = d;
-            d3.selectAll('.link').classed('selected', function(d2) {
+            */
+            global.selection = d;
+            d3.selectAll('.link').classed('selected', function (d2) {
                 return d2 === d;
             });
             return d3.selectAll('.node').classed('selected', false);
@@ -311,32 +334,32 @@
         } else {
             new_nodes.call(global.drag);
         }
-        new_nodes.filter(function(d) {
+        new_nodes.filter(function (d) {
             return d.editable;
-        }).append('circle').attr('r', 18).attr('stroke', function(d) {
+        }).append('circle').attr('r', 18).attr('stroke', function (d) {
             return global.colorify(d.type);
-        }).attr('fill', function(d) {
+        }).attr('fill', function (d) {
             return d3.hcl(global.colorify(d.type)).brighter(3);
         });
-        new_nodes.filter(function(d) {
+        new_nodes.filter(function (d) {
             return !d.editable;
-        }).append('rect').attr('x', -16).attr('y', -16).attr('width', 32).attr('height', 32).attr('stroke', function(d) {
+        }).append('rect').attr('x', -16).attr('y', -16).attr('width', 32).attr('height', 32).attr('stroke', function (d) {
             return global.colorify(d.type);
-        }).attr('fill', function(d) {
+        }).attr('fill', function (d) {
             return d3.hcl(global.colorify(d.type)).brighter(3);
         });
         /* draw the label
         */
-        new_nodes.append('text').text(function(d) {
+        new_nodes.append('text').text(function (d) {
             return d.id;
-        }).attr('dy', '0.35em').attr('fill', function(d) {
+        }).attr('dy', '0.35em').attr('fill', function (d) {
             return global.colorify(d.type);
         });
         return nodes.exit().remove();
     };
 
-    drag_add_link = function(selection) {
-        return selection.on('mousedown.add_link', (function(d) {
+    drag_add_link = function (selection) {
+        return selection.on('mousedown.add_link', (function (d) {
             var p;
             global.new_link_source = d;
             /* create the draggable link representation
@@ -349,11 +372,12 @@
             /* prevent text selection
             */
             return d3.event.preventDefault();
-        })).on('mouseup.add_link', (function(d) {
+        })).on('mouseup.add_link', (function (d) {
             /* add link and update, but only if a link is actually added
-            */      if (global.graph.add_link(global.new_link_source, d) != null) {
+            */
+            if (global.graph.add_link(global.new_link_source, d) != null) {
                 update();
-                return db.store(global.graph.serialize());
+                return db.store_graph(global.graph.serialize());
             }
         }));
     };

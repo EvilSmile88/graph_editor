@@ -28,6 +28,31 @@
         return db.get_graph(function (graph) {
             var container, library, svg, toolbar;
             global.graph = graph;
+
+            global.graph.serialize = function () {
+                /* PERSISTENCE - return a copy of the graph, with redundancies (whole nodes in links pointers) removed. also include the last_index property, to persist it also
+                */
+                var l;
+                return {
+                    nodes: global.graph.nodes,
+                    links: (function () {
+                        var _i, _len, _ref, _results;
+                        _ref = graph.links;
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            l = _ref[_i];
+                            _results.push({
+                                source: l.source.id,
+                                target: l.target.id,
+                                editable: l.editable
+                            });
+                        }
+                        return _results;
+                    })(),
+                    last_index: global.graph.last_index
+                };
+            };
+
             global.graph.objectify = function (graph) {
                 /* resolve node IDs (not optimized at all!)
                 */
@@ -58,89 +83,8 @@
                 }
                 return _results;
             };
-            global.graph.remove = function (condemned) {
-                if (!condemned.editable) return;
-                /* remove the given node or link from the graph, also deleting dangling links if a node is removed
-                */
-                if (__indexOf.call(global.graph.nodes, condemned) >= 0) {
-                    global.graph.nodes = global.graph.nodes.filter(function (n) {
-                        return n !== condemned;
-                    });
-                    return global.graph.links = global.graph.links.filter(function (l) {
-                        return l.source.id !== condemned.id && l.target.id !== condemned.id;
-                    });
-                } else if (__indexOf.call(global.graph.links, condemned) >= 0) {
-                    return global.graph.links = global.graph.links.filter(function (l) {
-                        return l !== condemned;
-                    });
-                }
-            };
-            global.graph.add_node = function (type) {
-                var n;
-                n = {
-                    id: global.graph.last_index++,
-                    x: width / 2,
-                    y: height / 2,
-                    type: type,
-                    editable: true
-                };
-                global.graph.nodes.push(n);
-                return n;
-            };
-            global.graph.add_link = function (source, target) {
-                /* avoid links to self
-                */
-                var l, link, _i, _len, _ref;
-                if (source === target) return null;
-                /* avoid link duplicates
-                */
-                _ref = global.graph.links;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    link = _ref[_i];
-                    if (link.source === source && link.target === target) return null;
-                }
-                l = {
-                    source: source,
-                    target: target,
-                    editable: true
-                };
-                global.graph.links.push(l);
-                return l;
-            };
-            global.graph.serialize = function () {
-                /* PERSISTENCE - return a copy of the graph, with redundancies (whole nodes in links pointers) removed. also include the last_index property, to persist it also
-                */
-                var l;
-                return {
-                    nodes: global.graph.nodes,
-                    links: (function () {
-                        var _i, _len, _ref, _results;
-                        _ref = global.graph.links;
-                        _results = [];
-                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                            l = _ref[_i];
-                            _results.push({
-                                source: l.source.id,
-                                target: l.target.id,
-                                editable: l.editable
-                            });
-                        }
-                        return _results;
-                    })(),
-                    last_index: global.graph.last_index
-                };
-            };
-            global.graph.objectify(global.graph);
 
-            // db.on_gun_update(rerender)
 
-            // function rerender(graph) {
-            //     debugger;
-            //     global.graph.nodes = graph.nodes;
-            //     global.graph.links = graph.links;
-            //     global.graph.objectify(graph);
-            //     // update();
-            // }
 
             /* create the SVG
             */
@@ -194,8 +138,23 @@
             }).on('dragend', function () {
                 return db.store_graph(global.graph.serialize());
             });
+
+            global.graph.objectify(global.graph);
+            update();
+
+            db.on_gun_update(rerender)
+
+            function rerender(graph) {
+                global.graph.objectify(graph);
+                global.graph.nodes = graph.nodes;
+                global.graph.links = graph.links;
+                global.graph.last_index = graph.last_index;
+                update();
+            }
+
+
             /* DELETION - pressing DEL deletes the selection
-            */
+    */
             d3.select(window).on('keydown', function () {
                 if (d3.event.keyCode === 46) {
                     if (global.selection != null) {
@@ -206,7 +165,58 @@
                     }
                 }
             });
-            update();
+
+
+            global.graph.remove = function (condemned) {
+                if (!condemned.editable) return;
+                /* remove the given node or link from the graph, also deleting dangling links if a node is removed
+                */
+                if (global.graph.nodes.find(item => item.id === condemned.id)) {
+                    global.graph.nodes = global.graph.nodes.filter(function (n) {
+                        return n.id !== condemned.id;
+                    });
+                    return global.graph.links = global.graph.links.filter(function (l) {
+                        return l.source.id !== condemned.id && l.target.id !== condemned.id;
+                    });
+                } else if (__indexOf.call(global.graph.links, condemned) >= 0) {
+                    return global.graph.links = global.graph.links.filter(function (l) {
+                        return l !== condemned;
+                    });
+                }
+            };
+
+            global.graph.add_node = function (type) {
+                var n;
+                n = {
+                    id: global.graph.last_index++,
+                    x: width / 2,
+                    y: height / 2,
+                    type: type,
+                    editable: true
+                };
+                global.graph.nodes.push(n);
+                return n;
+            };
+            global.graph.add_link = function (source, target) {
+                /* avoid links to self
+                */
+                var l, link, _i, _len, _ref;
+                if (source === target) return null;
+                /* avoid link duplicates
+                */
+                _ref = global.graph.links;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    link = _ref[_i];
+                    if (link.source === source && link.target === target) return null;
+                }
+                l = {
+                    source: source,
+                    target: target,
+                    editable: true
+                };
+                global.graph.links.push(l);
+                return l;
+            };
 
 
             /* TOOLBAR

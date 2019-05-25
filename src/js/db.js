@@ -35,24 +35,22 @@
                     editable: false
                 }
             ],
-            last_index: 0
+            last_index: 4
         }
     }
 
     window.db = {};
     const gun = Gun(['http://localhost:8765/gun', 'https://gunjs.herokuapp.com/gun']);
-    window.gun = gun;
     const user = gun.user();
-    window.user = user;
 
     user.auth('artyom88', 'artyom88');
 
     window.db.get_graph = function (callback, update) {
 
         gun.on('auth', function () {
-            const gunData = user.get('graph')
+            const gunData = user.get('graph');
             if (gunData) {
-                gunData.once(getDataSuccess)
+                gunData.once(getDataSuccess);
                 return;
             }
             callback(initGraphData.data);
@@ -60,7 +58,7 @@
 
         function getDataSuccess(value) {
             if (value) {
-                callback(initGraphData.data);
+                callback({...value});
                 return;
             }
             callback(initGraphData.data);
@@ -75,7 +73,7 @@
     }
 
     window.db.on_gun_update = function (callback) {
-        const gunData = user.get('graph')
+        const gunData = user.get('graph');
         if (gunData) {
             gunData.on(getDataSuccess)
         }
@@ -85,88 +83,5 @@
             }
         }
     }
-
-    // window.db.get_or_create = function (callback) {
-    //     var request;
-    //     request = indexedDB.open('graph_immutables', 2);
-    //     request.onupgradeneeded = function() {
-    //         debugger;
-    //         /* called whenever the DB changes version. triggers when the DB is created
-    //         */
-    //         var db, store;
-    //         db = request.result;
-    //         store = db.createObjectStore('graph', {
-    //             keyPath: 'id'
-    //         });
-    //         /* initial fake data
-    //         */
-    //         store.put(initGraphData);
-    //         return console.log('Database created or upgraded.');
-    //     };
-    //     return request.onsuccess = function() {
-    //         debugger;
-    //         /* called when the connection with the DB is opened successfully
-    //         */
-    //         var cursorRequest, db, keyRange, store, tx;
-    //         db = request.result;
-    //         console.log('Database connection opened.');
-    //         /* open a transaction
-    //         */
-    //         tx = db.transaction('graph', 'readwrite');
-    //         store = tx.objectStore('graph');
-    //         /* get everything in the store
-    //         */
-    //         keyRange = IDBKeyRange.lowerBound(0);
-    //         cursorRequest = store.openCursor(keyRange);
-    //         cursorRequest.onsuccess = function(e) {
-    //             /* called when the cursor request succeeds
-    //             */
-    //             var result;
-    //             result = e.target.result;
-    //             if (!(result != null)) return;
-    //             /* pass the result to the caller's callback
-    //             */
-    //             console.log(222, result.value.data)
-    //             callback(result.value.data);
-    //             return result["continue"]();
-    //         };
-    //         tx.oncomplete = function() {
-    //             /* called when the transaction ends
-    //             */        return console.log('Transaction complete.');
-    //         };
-    //         /* close the connection to the DB
-    //         */
-    //         return db.close();
-    //     };
-    // }
-
-    // window.db.store = function(graph) {
-    //     var request;
-    //     request = indexedDB.open('graph_immutables', 2);
-    //     return request.onsuccess = function() {
-    //         /* called when the connection with the DB is opened successfully
-    //         */
-    //         var db, store, tx;
-    //         db = request.result;
-    //         console.log('Database connection opened.');
-    //         /* open a transaction
-    //         */
-    //         tx = db.transaction('graph', 'readwrite');
-    //         store = tx.objectStore('graph');
-    //         /* store the given graph
-    //         */
-    //         store.put({
-    //             id: 0,
-    //             data: graph
-    //         });
-    //         tx.oncomplete = function() {
-    //             /* called when the transaction ends
-    //             */        return console.log('Transaction complete.');
-    //         };
-    //         /* close the connection to the DB
-    //         */
-    //         return db.close();
-    //     };
-    // };
 
 }).call(this);

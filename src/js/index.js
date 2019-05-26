@@ -8,9 +8,10 @@
             return -1;
         };
 
-    width = window.innerWidth - 10;
+    width = 900;
 
-    height = window.innerHeight - 20;
+    height = 600;
+
     window.global = global;
     /* SELECTION - store the selected node
     */
@@ -88,7 +89,7 @@
 
             /* create the SVG
             */
-            svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
+            svg = d3.select('body').append('svg').attr('width', width).attr('height', height).attr('class', 'graph-area');
             /* ZOOM and PAN
             */
             /* create container elements

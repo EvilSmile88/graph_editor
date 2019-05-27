@@ -1,25 +1,31 @@
 {
-  "name": "D3_with_Gun",
+  "name": "server",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "scripts": {
-    "client": "gulp start",
-    "gun": "npm run start --prefix node_modules/gun",
-    "dev": "concurrently \"npm run gun\" \"npm run client\"",
-    "build": "gulp build"
+  "engines": {
+    "node": "8.11.3",
+    "npm": "5.6.0"
   },
+  "scripts": {
+    "server": "nodemon index.js",
+    "start": "node index.js",
+    "gun": "npm run start --prefix node_modules/gun",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run gun\" \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^4.3.1",
-    "concurrently": "^4.1.0",
-    "gulp-autoprefixer": "^4.1.0",
-    "gulp-sass": "^3.2.1",
-    "gulp-server-livereload": "^1.9.2"
+    "arangojs": "^5.8.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "gun": "^0.2019.514"
   },
-  "description": "",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-livereload": "^3.8.1"
+    "concurrently": "^4.0.1",
+    "nodemon": "^1.18.4"
   }
 }

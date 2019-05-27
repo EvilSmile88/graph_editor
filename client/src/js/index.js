@@ -1,5 +1,16 @@
 (function () {
 
+    fetch('http://localhost:5000/api/graph')
+        .then(function (response) {
+            response.json().then(function(data) {
+                console.log(data);
+            });
+        })
+        .catch(error => {
+            console.log(error)
+        });
+
+
     var drag_add_link, global, height, update, width,
         __indexOf = Array.prototype.indexOf || function (item) {
             for (var i = 0, l = this.length; i < l; i++) {
@@ -84,7 +95,6 @@
                 }
                 return _results;
             };
-
 
 
             /* create the SVG

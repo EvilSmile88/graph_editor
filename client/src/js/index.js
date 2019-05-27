@@ -1,9 +1,16 @@
 (function () {
 
-    fetch('http://localhost:5000/api/graph')
+    fetch('http://localhost:5000/api/graph', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({a: 1, b: 2})
+    })
         .then(function (response) {
             response.json().then(function(data) {
-                console.log(data);
+                console.log(2222, data);
             });
         })
         .catch(error => {

@@ -14,9 +14,8 @@ module.exports = app => {
   });
 
     app.post('/api/graph', function(req, res){
-       service.updateGraph().then(
+       service.updateGraph(req.body).then(
            function (graph) {
-               console.log(33333, graph);
                res.send({result: 'Success'})
            },
            function (err) {

@@ -1,22 +1,18 @@
+const { dataBaseURL, dataBaseAuthName, dataBaseAuthPassword } = require("../config/keys");
+
 const Database = require('arangojs');
 const aqlQuery = Database.aqlQuery;
-const db = new Database('http://65.52.158.60:8529');
+const db = new Database(dataBaseURL);
 
-db.useBasicAuth('root', '');
+db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 
 db.useDatabase('_system');
 const collection = db.collection('GraphData');
 
 module.exports = {
-
-    updateGraph : async function() {
+    updateGraph : async function(graph) {
         try {
-            const bindVars = {
-                user: 'artyom88',
-                nodes: [322],
-                lines: [],
-            };
-            const cursor = await db.query(aqlQuery`UPSERT { user: ${bindVars.user}} INSERT ${bindVars} UPDATE ${bindVars} IN GraphData OPTIONS { ignoreRevs: false }`);
+            const cursor = await db.query(aqlQuery`UPSERT { user: ${graph.user}} INSERT ${graph} UPDATE ${graph} IN GraphData`);
             const result = await cursor.all();
             return result;
         } catch (err) { console.log(err) }

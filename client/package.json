@@ -2,13 +2,8 @@
   "name": "D3_with_Gun",
   "version": "1.0.0",
   "main": "index.js",
-  "proxy": {
-    "/api/*": {
-      "target": "http://localhost:5000"
-    }
-  },
   "scripts": {
-    "start": "gulp start",
+    "start": "set NODE_ENV=dev && gulp start",
     "build": "gulp build"
   },
   "author": "",

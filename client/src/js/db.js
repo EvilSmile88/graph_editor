@@ -3,9 +3,9 @@
     window.db = {};
     const gun = Gun(['http://localhost:8765/gun', 'https://gunjs.herokuapp.com/gun']);
     const user = gun.user();
-
+    const gunUserName = 'artyom88';
     // Login to test account;
-    user.auth('artyom88', 'artyom88');
+    user.auth(gunUserName, 'artyom88');
 
     window.db.get_graph = function (callback, update) {
 
@@ -29,7 +29,23 @@
         if (!user.is) {
             return
         }
+        graph = {...graph, user: gunUserName};
         user.get('graph').put(JSON.stringify(graph));
+        if (navigator.onLine) {
+            fetch(env.API_URL + 'graph', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify(graph)
+            })
+                .then(function (response) {
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        }
     };
 
     window.db.on_gun_update = function (callback) {

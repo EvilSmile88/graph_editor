@@ -12,7 +12,7 @@
     "start": "node index.js",
     "gun": "npm run start --prefix node_modules/gun",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run gun\" \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"node createDevClientEnv\" \"npm run gun\" \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],

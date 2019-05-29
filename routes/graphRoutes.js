@@ -2,9 +2,8 @@ var service = require('../services/DataServices.js');
 
 module.exports = app => {
     app.get('/api/graph', function(req, res){
-        service.getAllUsers().then(
+        service.getGraph().then(
             function (list) {
-                //render userlist view with list if user
                 res.send(list);
             },
             function (err) {

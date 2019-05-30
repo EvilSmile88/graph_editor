@@ -2,6 +2,26 @@ body {
   display: flex;
   justify-content: center;
   background-color: #F8F8F8;
+  position: relative;
+}
+
+.net-connection {
+  position: fixed;
+  top: 20px;
+  left: 100px;
+  padding: 4px 20px;
+  background-color: #55c63c;
+  color: white;
+  box-sizing: border-box;
+  width: 120px;
+  border-radius: 16px;
+  text-align: center;
+  transition: background-color ease-in-out 0.3s;
+  will-change: background-color;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.3);
+  &.net-connection--off {
+    background-color: #c61719;
+  }
 }
 
 .node > :not(text) {

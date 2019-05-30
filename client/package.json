@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && gulp start",
+    "start": "gulp start",
     "build": "gulp build"
   },
   "author": "",

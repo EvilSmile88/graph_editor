@@ -1,4 +1,18 @@
 (function () {
+
+    window.addEventListener('offline', () => {
+        const netConnection = document.querySelector('#net-connection');
+        netConnection.innerHTML = 'OFF LINE';
+        netConnection.classList.add('net-connection--off')
+    });
+
+    window.addEventListener('online', () => {
+        const netConnection = document.querySelector('#net-connection');
+        netConnection.innerHTML = 'ON LINE';
+        netConnection.classList.remove('net-connection--off')
+    });
+
+
     var drag_add_link, global, height, update, width,
         __indexOf = Array.prototype.indexOf || function (item) {
             for (var i = 0, l = this.length; i < l; i++) {

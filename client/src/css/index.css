@@ -21,8 +21,29 @@ body {
   .net-connection.net-connection--off {
     background-color: #c61719; }
 
-.node > :not(text) {
-  stroke-width: 4px; }
+.node {
+  cursor: pointer;
+  transition: opacity ease-in 0.3s; }
+  .node > :not(text) {
+    stroke-width: 4px; }
+  .node > text {
+    pointer-events: none;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none; }
+  .node.node--disabled {
+    cursor: default;
+    pointer-events: none; }
+    .node.node--disabled circle, .node.node--disabled rect {
+      stroke: rgba(220, 220, 220, 0.7);
+      fill: #fafafa; }
+    .node.node--disabled text {
+      fill: gainsboro; }
 
 .graph-area {
   border: 1px solid #e5e5e5;
@@ -30,17 +51,6 @@ body {
   border-radius: 12px;
   margin-top: 100px;
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05); }
-
-.node > text {
-  pointer-events: none;
-  font-family: sans-serif;
-  font-weight: bold;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none; }
 
 .link, .drag_link {
   stroke-width: 6px;

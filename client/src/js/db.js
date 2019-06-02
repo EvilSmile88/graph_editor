@@ -25,13 +25,13 @@
         });
     };
 
-    window.db.store_graph = function (graph) {
+    window.db.store_graph = function (graph, storeToDB = true) {
         if (!user.is) {
             return
         }
         graph = {...graph, user: gunUserName};
         user.get('graph').put(JSON.stringify(graph));
-        if (navigator.onLine) {
+        if (navigator.onLine && storeToDB) {
             fetch(env.API_URL + 'graph', {
                 headers: {
                     'Accept': 'application/json',

@@ -24,4 +24,16 @@ module.exports = app => {
            }
        );
     });
+
+    app.delete('/api/graphNodes', function(req, res){
+        service.removeNodes(req.body).then(
+            function (graph) {
+                res.send({result: 'Success'})
+            },
+            function (err) {
+                console.log(e);
+                res.status(500).send({error: 'Internal server error!'})
+            }
+        );
+    });
 };

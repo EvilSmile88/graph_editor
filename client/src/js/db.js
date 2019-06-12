@@ -48,6 +48,30 @@
         }
     };
 
+    window.db.remove_nodes = function (graph, storeToDB = true, nodes) {
+        if (!user.is) {
+            return
+        }
+        graph = {...graph, user: gunUserName};
+        user.get('graph').put(JSON.stringify(graph));
+        if (navigator.onLine && storeToDB) {
+            debugger;
+            fetch(env.API_URL + 'graphNodes', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "DELETE",
+                body: JSON.stringify(nodes)
+            })
+                .then(function (response) {
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        }
+    };
+
     window.db.on_gun_update = function (callback) {
         const gunData = user.get('graph');
         if (gunData) {

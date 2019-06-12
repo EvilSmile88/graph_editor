@@ -19,7 +19,8 @@ module.exports = {
         });
         graph.nodes.forEach(async function (node, index) {
             try {
-                await db.query(aqlQuery`UPSERT { id: ${graph.nodes[index].id}} INSERT ${node} UPDATE ${node} IN GraphNodes`);
+                const newNode = {...node, '_key': `${node.id}`};
+                await db.query(aqlQuery`UPSERT { id: ${graph.nodes[index].id}} INSERT ${newNode} UPDATE ${newNode} IN GraphNodes`);
             } catch (err) {
                 console.log(err)
             }

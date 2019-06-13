@@ -150,24 +150,24 @@
             global.drag = global.force.drag().on('dragstart', function (d) {
                 const newGraph = global.graph.serialize();
                 // Specify editable node if user online
-                // if (navigator.onLine) {
-                //     newGraph.nodes = newGraph.nodes.map(node => {
-                //         if (node.id === d.id) {
-                //             node.editableBy = global.userID;
-                //         }
-                //         return node;
-                //     })
-                //     db.store_graph(newGraph, false);
-                // }
+                 if (navigator.onLine) {
+                     newGraph.nodes = newGraph.nodes.map(node => {
+                         if (node.id === d.id) {
+                             node.editableBy = global.userID;
+                         }
+                         return node;
+                     })
+                     db.store_graph(newGraph, false);
+                 }
                 return d.fixed = true;
             }).on('dragend', function () {
                 const newGraph = global.graph.serialize();
-                // newGraph.nodes = newGraph.nodes.map(node => {
-                //     if (node.editableBy === global.userID) {
-                //         delete node.editableBy;
-                //     }
-                //     return node;
-                // })
+                 newGraph.nodes = newGraph.nodes.map(node => {
+                     if (node.editableBy === global.userID) {
+                         delete node.editableBy;
+                     }
+                     return node;
+                 })
                 return db.store_graph(newGraph);
             });
 
@@ -182,14 +182,15 @@
                 global.graph.links = graph.links;
                 global.graph.last_index = graph.last_index;
                 update();
-                // const editingNode = graph.nodes.find(node => node.editableBy);
-                // if (!editingNode || (editingNode && editingNode.editableBy !== global.userID)) {
-                //     global.graph.objectify(graph);
-                //     global.graph.nodes = graph.nodes;
-                //     global.graph.links = graph.links;
-                //     global.graph.last_index = graph.last_index;
-                //     update();
-                // }
+                
+                 const editingNode = graph.nodes.find(node => node.editableBy);
+                 if (!editingNode || (editingNode && editingNode.editableBy !== global.userID)) {
+                     global.graph.objectify(graph);
+                     global.graph.nodes = graph.nodes;
+                     global.graph.links = graph.links;
+                     global.graph.last_index = graph.last_index;
+                     update();
+                 }
             }
 
 

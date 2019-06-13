@@ -8,7 +8,11 @@ db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 db.useDatabase(process.env.DB || 'graph-dev');
 
 module.exports = {
+
+    // Updates all graph data included nodes and relationship between nodes.
+    // Stores data in Arango DB Edge collection
     updateGraph: async function (graph) {
+
         graph.links.forEach(async function (link, index) {
             try {
                 const edge = {...link, '_from': `GraphNodes/${link.source}`, '_to': `GraphNodes/${link.target}`};
@@ -54,6 +58,7 @@ module.exports = {
         }
     },
 
+    //
     removeNodes: async function (nodes) {
         nodes.forEach(async function (node) {
             try {

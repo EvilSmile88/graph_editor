@@ -32,7 +32,7 @@
                     const dThreeGraph = new module.Graph(graph, userID);
                     dThreeGraph.initLayout(svg, layoutWidth, layoutHeight);
                     dThreeGraph.initToolBar(toolbar, library);
-                    dThreeGraph.objectify(dTheeGraph.data)
+                    dThreeGraph.objectify(dThreeGraph.data)
                     dThreeGraph.update();
                     dThreeGraph.drag.on('dragstart', function (d) {
                         const newGraph = dThreeGraph.serialize();
@@ -58,13 +58,12 @@
                         return db.store_graph(newGraph);
                     });
 
-
                     dThreeGraph.eventsEmitter.subscribe('event:add-node', data => {
-                        db.store_graph(dTheeGraph.serialize());
+                        db.store_graph(dThreeGraph.serialize());
                     });
 
                     dThreeGraph.eventsEmitter.subscribe('event:add-link', data => {
-                        db.store_graph(dTheeGraph.serialize());
+                        db.store_graph(dThreeGraph.serialize());
                     });
 
                     d3.select(window).on('keydown', function () {

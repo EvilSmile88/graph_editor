@@ -55,7 +55,6 @@
         graph = {...graph, user: gunUserName};
         user.get('graph').put(JSON.stringify(graph));
         if (navigator.onLine && storeToDB) {
-            debugger;
             fetch(env.API_URL + 'graphNodes', {
                 headers: {
                     'Accept': 'application/json',

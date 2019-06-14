@@ -19,7 +19,7 @@ function get(req, res, next) {
 }
 
 function update(req, res, next) {
-  joi.validate(req.body, graphValidator, function (error, value) {
+  joi.validate(req.body, graphValidator.graph, function (error, value) {
     if (error){
       res.status(400).send(error)
     }

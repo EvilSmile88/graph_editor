@@ -2,7 +2,7 @@ var router = require('express').Router();
 var graphDataServices = require('../../services/graphDataServices.js');
 var internalServerError = require('../../utils/error/internalServerError');
 var badRequestError = require('../../utils/error/badRequestError');
-var graphValidator = require('../../models/validator/graph.validator');
+var { graphValidator } = require('../../models/validator/graph.validator');
 const joi = require('joi');
 
 // return a list of tags
@@ -19,7 +19,7 @@ function get(req, res, next) {
 }
 
 function update(req, res, next) {
-  joi.validate(req.body, graphValidator.graph, function (error, value) {
+  joi.validate(req.body, graphValidator, function (error, value) {
     if (error){
       res.status(400).send(error)
     }

@@ -55,9 +55,9 @@ module.exports = {
         try {
             const newNode = {...node, '_key': `${node.id}`};
             // ArangoError: superfluous suffix, expecting /_api/document?collection=<identifier>
-            // await nodesCollection.save(newNode);
-            const result = await db.query(aqlQuery`INSERT ${newNode} IN GraphNodes`);
-            return result;
+            await nodesCollection.save(newNode);
+            //const result = await db.query(aqlQuery`INSERT ${newNode} IN GraphNodes`);
+            //return result;
         } catch (err) {
             console.log(err)
         }
@@ -87,6 +87,12 @@ module.exports = {
     removeLinks: async function (links) {
         links.forEach(async function (link) {
             try {
+                // console.log('removeLinks');
+                // const graph = db.graph("TestGraph");
+                // const collection = graph.edgeCollection("GraphDataEdge");
+                // const result = await collection.remove("GraphDataEdge/123123");
+                // console.log('removeLinks: Success');
+                // return result;
                 await db.query(aqlQuery`FOR link IN GraphDataEdge FILTER link.source == ${link.source} && link.target == ${link.target} REMOVE link IN GraphDataEdge`);
             } catch (err) {
                 console.log(err)
@@ -96,9 +102,11 @@ module.exports = {
 
     addLink: async function (link) {
         try {
-            const edge = {...link, '_from': `GraphNodes/${link.source}`, '_to': `GraphNodes/${link.target}`};
-            const cursor = await db.query(aqlQuery`UPSERT { source: ${link.source}, target: ${link.target}} INSERT ${edge} UPDATE ${edge} IN GraphDataEdge`);
-            const result = await cursor.all();
+              const graph = db.graph("TestGraph");
+              const collection = graph.edgeCollection("GraphDataEdge");
+              // const edge = {...link, '_key': '123123'};
+              const result = await collection.save(link, `GraphNodes/${link.source}`, `GraphNodes/${link.target}`);
+              return result;
         } catch (err) {
             console.log(err)
         }

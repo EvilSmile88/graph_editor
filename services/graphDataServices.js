@@ -7,11 +7,14 @@ db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 
 db.useDatabase(process.env.DB || 'graph-dev');
 
+const nodesCollection = db.collection('GraphNodes');
+
+
 module.exports = {
 
     // Updates all graph data included nodes and relationship between nodes.
     // Stores data in Arango DB Edge collection
-    updateGraph: async function (graph) {
+    forceUpdateGraph: async function (graph) {
         graph.links.forEach(async function (link, index) {
             try {
                 const edge = {...link, '_from': `GraphNodes/${link.source}`, '_to': `GraphNodes/${link.target}`};
@@ -52,6 +55,16 @@ module.exports = {
             const cursor = await db.query(aqlQuery`UPSERT { user: ${graph.user}} INSERT ${graph} UPDATE ${graph} IN GraphData`);
             const result = await cursor.all();
             return result;
+        } catch (err) {
+            console.log(err)
+        }
+    },
+
+    addNode: async function (node) {
+        try {
+            const newNode = {...node, '_key': `${node.id}`};
+            await nodesCollection.save(newNode);
+            return newNode;
         } catch (err) {
             console.log(err)
         }

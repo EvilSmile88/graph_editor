@@ -82,6 +82,15 @@
         }
     }
 
+    window.db.api_add_node = (node) => fetch(env.API_URL + 'addNode', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(node)
+    })
+
 }).call(this);
 
 

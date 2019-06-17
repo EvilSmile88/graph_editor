@@ -114,6 +114,13 @@ export class Graph {
         }));
 
         this.drag = this.force.drag();
+
+        this.drag.on('dragstart', (d) => {
+            this.eventsEmitter.emit("event:drag-node-start", d);
+            return d.fixed = true;
+        }).on('dragend', (d) => {
+            this.eventsEmitter.emit("event:drag-node-end", d);
+        });
     }
 
     update () {
@@ -270,20 +277,38 @@ export class Graph {
 
 
     removeItem (condemned) {
-        if (condemned.editable) {
+        if (this.selection && condemned.editable) {
             /* remove the given node or link from the graph, also deleting dangling links if a node is removed
          */
+            let removedLinks = [];
+            let removedNodes = [];
             if (this.data.nodes.find(item => item.id === condemned.id)) {
                 this.data.nodes = this.data.nodes.filter((n) => {
+                    const isRemoved = n.id === condemned.id;
+                    if (isRemoved) {
+                        removedNodes.push(n);
+                    }
                     return n.id !== condemned.id;
                 });
-                return this.data.links = this.data.links.filter((l) => {
+                this.data.links = this.data.links.filter((l) => {
+                    const isRemoved = (l.source.id === condemned.id) || (l.target.id === condemned.id);
+                    if (isRemoved) {
+                        removedLinks.push(l);
+                    }
                     return l.source.id !== condemned.id && l.target.id !== condemned.id;
                 });
-            } else if (Array.prototype.indexOf .call(this.data.links, condemned) >= 0) {
-                return this.data.links = this.data.links.filter( (l) => {
-                    return l !== condemned;
+                this.eventsEmitter.emit("event:remove-nodes", { removedNodes, removedLinks });
+                return this.data.links;
+            } else if (Array.prototype.indexOf.call(this.data.links, condemned) >= 0) {
+                this.data.links = this.data.links.filter( (l) => {
+                    const isRemoved = l.source.id === condemned.source.id && l.target.id === condemned.target.id;
+                    if (isRemoved) {
+                        removedLinks.push(l);
+                    }
+                    return l.source.id !== condemned.source.id && l.target.id !== condemned.target.id;
                 });
+                this.eventsEmitter.emit("event:remove-links", removedLinks);
+                return this.data.links;
             }
             this.selection = null;
             this.update();
@@ -338,29 +363,3 @@ export class Graph {
 
 }
 
-class EventEmitter {
-    constructor() {
-        this.events = {};
-    }
-
-    emit(eventName, data) {
-        const event = this.events[eventName];
-        if( event ) {
-            event.forEach(fn => {
-                fn.call(null, data);
-            });
-        }
-    }
-
-    subscribe(eventName, fn) {
-        if(!this.events[eventName]) {
-            this.events[eventName] = [];
-        }
-
-        this.events[eventName].push(fn);
-        return () => {
-            this.events[eventName] = this.events[eventName].filter(eventFn => fn !== eventFn);
-        }
-    }
-
-}

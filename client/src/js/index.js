@@ -34,32 +34,45 @@
                     dThreeGraph.initToolBar(toolbar, library);
                     dThreeGraph.objectify(dThreeGraph.data)
                     dThreeGraph.update();
-                    dThreeGraph.drag.on('dragstart', function (d) {
-                        const newGraph = dThreeGraph.serialize();
-                        // Specify editable node if user online
-                        // if (navigator.onLine) {
-                        //     newGraph.nodes = newGraph.nodes.map(node => {
-                        //         if (node.id === d.id) {
-                        //             node.editableBy = global.userID;
-                        //         }
-                        //         return node;
-                        //     })
-                        //     db.store_graph(newGraph, false);
-                        // }
-                        return d.fixed = true;
-                    }).on('dragend', function () {
-                        const newGraph = dThreeGraph.serialize();
-                        // newGraph.nodes = newGraph.nodes.map(node => {
-                        //     if (node.editableBy === global.userID) {
-                        //         delete node.editableBy;
-                        //     }
-                        //     return node;
-                        // })
-                        return db.store_graph(newGraph);
+                    // dThreeGraph.drag.on('dragstart', function (d) {
+                    //     const newGraph = dThreeGraph.serialize();
+                    //     // Specify editable node if user online
+                    //     // if (navigator.onLine) {
+                    //     //     newGraph.nodes = newGraph.nodes.map(node => {
+                    //     //         if (node.id === d.id) {
+                    //     //             node.editableBy = global.userID;
+                    //     //         }
+                    //     //         return node;
+                    //     //     })
+                    //     //     db.store_graph(newGraph, false);
+                    //     // }
+                    //     return d.fixed = true;
+                    // }).on('dragend', function () {
+                    //     const newGraph = dThreeGraph.serialize();
+                    //     // newGraph.nodes = newGraph.nodes.map(node => {
+                    //     //     if (node.editableBy === global.userID) {
+                    //     //         delete node.editableBy;
+                    //     //     }
+                    //     //     return node;
+                    //     // })
+                    //     return db.store_graph(newGraph);
+                    // });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:drag-node-end', node => {
+                        db.store_graph(dThreeGraph.serialize());
                     });
 
-                    dThreeGraph.eventsEmitter.subscribe('event:add-node', data => {
-                        db.store_graph(dThreeGraph.serialize());
+                    dThreeGraph.eventsEmitter.subscribe('event:add-node', node => {
+                        db.store_graph(dThreeGraph.serialize(), false);
+                        if (navigator.onLine) {
+                            db.api_add_node(node)
+                                .then(function (response) {
+                                    console.log(333, response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                        }
                     });
 
                     dThreeGraph.eventsEmitter.subscribe('event:add-link', data => {
@@ -71,9 +84,19 @@
                         if (key === 8 || key === 46) {
                             if (dThreeGraph.selection != null) {
                                 dThreeGraph.removeItem(dThreeGraph.selection);
-                                return db.store_graph(dThreeGraph.serialize());
+                                return;
                             }
                         }
+                    });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:remove-nodes', (data) => {
+                        console.log(2322, data)
+                        db.store_graph(dThreeGraph.serialize());
+                    });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:remove-links', links => {
+                        console.log(222, links)
+                        db.store_graph(dThreeGraph.serialize());
                     });
 
                     db.on_gun_update((newData) => {

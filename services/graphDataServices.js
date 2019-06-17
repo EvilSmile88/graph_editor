@@ -6,6 +6,8 @@ db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 
 db.useDatabase(process.env.DB || 'graph-dev');
 
+const nodesCollection = db.collection('GraphNodes');
+
 module.exports = {
 
     // Updates all graph data included nodes and relationship between nodes.
@@ -52,6 +54,8 @@ module.exports = {
     addNode: async function (node) {
         try {
             const newNode = {...node, '_key': `${node.id}`};
+            // ArangoError: superfluous suffix, expecting /_api/document?collection=<identifier>
+            // await nodesCollection.save(newNode);
             const result = await db.query(aqlQuery`INSERT ${newNode} IN GraphNodes`);
             return result;
         } catch (err) {

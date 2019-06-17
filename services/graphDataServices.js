@@ -7,19 +7,16 @@ db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 db.useDatabase(process.env.DB || 'graph-dev');
 
 const nodesCollection = db.collection('GraphNodes');
+const graph = db.graph("TestGraph");
+const collection = graph.edgeCollection("GraphDataEdge");
 
 module.exports = {
 
     // Updates all graph data included nodes and relationship between nodes.
     // Stores data in Arango DB Edge collection
     forceUpdateGraph: async function (graph) {
-        graph.links.forEach(async function (link, index) {
-            try {
-                const edge = {...link, '_from': `GraphNodes/${link.source}`, '_to': `GraphNodes/${link.target}`};
-                await db.query(aqlQuery`UPSERT { source: ${link.source}, target: ${link.target}} INSERT ${edge} UPDATE ${edge} IN GraphDataEdge`);
-            } catch (err) {
-                console.log(err)
-            }
+        graph.links.forEach( (link) => {
+            this.addLink(link)
         });
         graph.nodes.forEach(async function (node, index) {
             try {
@@ -54,10 +51,9 @@ module.exports = {
     addNode: async function (node) {
         try {
             const newNode = {...node, '_key': `${node.id}`};
-            // ArangoError: superfluous suffix, expecting /_api/document?collection=<identifier>
-            await nodesCollection.save(newNode);
-            //const result = await db.query(aqlQuery`INSERT ${newNode} IN GraphNodes`);
-            //return result;
+            const result = await db.query(aqlQuery`INSERT ${newNode} IN GraphNodes`);
+            return result;
+            // await nodesCollection.save(newNode);
         } catch (err) {
             console.log(err)
         }
@@ -77,7 +73,8 @@ module.exports = {
         nodes.forEach(async function (node) {
             try {
                 await db.query(aqlQuery`FOR node IN GraphNodes FILTER node.id == ${node.id} REMOVE node IN GraphNodes`);
-                await db.query(aqlQuery`FOR link IN GraphDataEdge FILTER link.source == ${node.id} || link.target == ${node.id} REMOVE link IN GraphDataEdge`);
+                const edges = await collection.edges(`GraphNodes/${node.id}`);
+                edges.map(async edge => { await collection.remove(edge._id);});
             } catch (err) {
                 console.log(err)
             }
@@ -87,13 +84,8 @@ module.exports = {
     removeLinks: async function (links) {
         links.forEach(async function (link) {
             try {
-                // console.log('removeLinks');
-                // const graph = db.graph("TestGraph");
-                // const collection = graph.edgeCollection("GraphDataEdge");
-                // const result = await collection.remove("GraphDataEdge/123123");
-                // console.log('removeLinks: Success');
-                // return result;
-                await db.query(aqlQuery`FOR link IN GraphDataEdge FILTER link.source == ${link.source} && link.target == ${link.target} REMOVE link IN GraphDataEdge`);
+                const result = await collection.remove(`GraphDataEdge/${link.source}-${link.target}`);
+                return result;
             } catch (err) {
                 console.log(err)
             }
@@ -102,10 +94,8 @@ module.exports = {
 
     addLink: async function (link) {
         try {
-              const graph = db.graph("TestGraph");
-              const collection = graph.edgeCollection("GraphDataEdge");
-              // const edge = {...link, '_key': '123123'};
-              const result = await collection.save(link, `GraphNodes/${link.source}`, `GraphNodes/${link.target}`);
+              const edge = {...link, '_key': `${link.source}-${link.target}`};
+              const result = await collection.save(edge, `GraphNodes/${link.source}`, `GraphNodes/${link.target}`);
               return result;
         } catch (err) {
             console.log(err)

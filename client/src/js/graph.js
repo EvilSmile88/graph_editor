@@ -305,7 +305,8 @@ export class Graph {
                     if (isRemoved) {
                         removedLinks.push(l);
                     }
-                    return l.source.id !== condemned.source.id && l.target.id !== condemned.target.id;
+                    console.log(1231, (l.source.id !== condemned.source.id) && (l.target.id !== condemned.target.id))
+                    return (l.source.id !== condemned.source.id) || (l.target.id !== condemned.target.id);
                 });
                 this.eventsEmitter.emit("event:remove-links", removedLinks);
                 return this.data.links;

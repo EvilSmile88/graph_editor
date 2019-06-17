@@ -40,7 +40,6 @@
                         const netConnection = document.querySelector('#net-connection');
                         netConnection.innerHTML = 'ON LINE';
                         netConnection.classList.remove('net-connection--off');
-                        debugger;
                         db.api_graph_force_update(dThreeGraph.serialize())
                             .then(function (response) {
                                 console.log(333, response)

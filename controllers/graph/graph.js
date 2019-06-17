@@ -4,22 +4,27 @@ var internalServerError = require('../../utils/error/internalServerError');
 var badRequestError = require('../../utils/error/badRequestError');
 var { graphValidator } = require('../../models/validator/graph.validator');
 const joi = require('joi');
+var logger = require('../../utils/logger')
 
 // return a list of tags
 function get(req, res, next) {
+
   graphDataServices.getGraph().then(
     function (list) {
       res.send(list);
     },
     function (err) {
-      console.log(e);
+      logger.error(err);
       res.status(500).send(internalServerError)
     }
   );
 }
 
 function update(req, res, next) {
+  console.log('update');
   joi.validate(req.body, graphValidator, function (error, value) {
+    logger.error('validated');
+    console.log('validated');
     if (error){
       res.status(400).send(error)
     }
@@ -28,7 +33,7 @@ function update(req, res, next) {
         res.send({result: 'Success'})
       },
       function (err) {
-        console.log(e);
+        logger.error(err);
         res.status(500).send(internalServerError)
       }
     );
@@ -42,7 +47,7 @@ function deleteNode(req, res, next) {
       res.send({result: 'Success'})
     },
     function (err) {
-      console.log(e);
+      logger.error(err);
       res.status(500).send(internalServerError)
     }
   );

@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-const schema = joi.object().keys({
+const nodeValidator = joi.object().keys({
   editable: joi.boolean(),
   x: joi.number(),
   y: joi.number(),
@@ -9,9 +9,9 @@ const schema = joi.object().keys({
   px: joi.number(),
   py: joi.number(),
   fixed: joi.number(),
-  id: joi.number(),
+  id: joi.boolean(),
 });
 
 module.exports = {
-  schema,
+  nodeValidator,
 };

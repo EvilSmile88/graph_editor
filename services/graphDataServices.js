@@ -57,7 +57,7 @@ module.exports = {
         }
     },
 
-    //
+
     removeNodes: async function (nodes) {
         nodes.forEach(async function (node) {
             try {

@@ -6,12 +6,6 @@
         netConnection.classList.add('net-connection--off')
     });
 
-    window.addEventListener('online', () => {
-        const netConnection = document.querySelector('#net-connection');
-        netConnection.innerHTML = 'ON LINE';
-        netConnection.classList.remove('net-connection--off')
-    });
-
     const layoutWidth = 900;
     const layoutHeight = 600;
     const userID = new IDGenerator().generate();
@@ -34,36 +28,90 @@
                     dThreeGraph.initToolBar(toolbar, library);
                     dThreeGraph.objectify(dThreeGraph.data)
                     dThreeGraph.update();
-                    dThreeGraph.drag.on('dragstart', function (d) {
-                        const newGraph = dThreeGraph.serialize();
-                        // Specify editable node if user online
-                        // if (navigator.onLine) {
-                        //     newGraph.nodes = newGraph.nodes.map(node => {
-                        //         if (node.id === d.id) {
-                        //             node.editableBy = global.userID;
-                        //         }
-                        //         return node;
-                        //     })
-                        //     db.store_graph(newGraph, false);
-                        // }
-                        return d.fixed = true;
-                    }).on('dragend', function () {
-                        const newGraph = dThreeGraph.serialize();
-                        // newGraph.nodes = newGraph.nodes.map(node => {
-                        //     if (node.editableBy === global.userID) {
-                        //         delete node.editableBy;
-                        //     }
-                        //     return node;
-                        // })
-                        return db.store_graph(newGraph);
+                    db.api_graph_force_update(dThreeGraph.serialize())
+                        .then(function (response) {
+                            console.log(333, response)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        });
+
+                    window.addEventListener('online', () => {
+                        const netConnection = document.querySelector('#net-connection');
+                        netConnection.innerHTML = 'ON LINE';
+                        netConnection.classList.remove('net-connection--off');
+                        debugger;
+                        db.api_graph_force_update(dThreeGraph.serialize())
+                            .then(function (response) {
+                                console.log(333, response)
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
                     });
 
-                    dThreeGraph.eventsEmitter.subscribe('event:add-node', data => {
+                    // dThreeGraph.drag.on('dragstart', function (d) {
+                    //     const newGraph = dThreeGraph.serialize();
+                    //     // Specify editable node if user online
+                    //     // if (navigator.onLine) {
+                    //     //     newGraph.nodes = newGraph.nodes.map(node => {
+                    //     //         if (node.id === d.id) {
+                    //     //             node.editableBy = global.userID;
+                    //     //         }
+                    //     //         return node;
+                    //     //     })
+                    //     //     db.store_graph(newGraph, false);
+                    //     // }
+                    //     return d.fixed = true;
+                    // }).on('dragend', function () {
+                    //     const newGraph = dThreeGraph.serialize();
+                    //     // newGraph.nodes = newGraph.nodes.map(node => {
+                    //     //     if (node.editableBy === global.userID) {
+                    //     //         delete node.editableBy;
+                    //     //     }
+                    //     //     return node;
+                    //     // })
+                    //     return db.store_graph(newGraph);
+                    // });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:drag-node-end', node => {
                         db.store_graph(dThreeGraph.serialize());
+                        db.store_graph(dThreeGraph.serialize());
+                        if (navigator.onLine) {
+                            db.api_update_node(node)
+                                .then(function (response) {
+                                    console.log(333, response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                        }
                     });
 
-                    dThreeGraph.eventsEmitter.subscribe('event:add-link', data => {
+                    dThreeGraph.eventsEmitter.subscribe('event:add-node', node => {
                         db.store_graph(dThreeGraph.serialize());
+                        if (navigator.onLine) {
+                            db.api_add_node(node)
+                                .then(function (response) {
+                                    console.log(response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                        }
+                    });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:add-link', link => {
+                        db.store_graph(dThreeGraph.serialize());
+                        if (navigator.onLine) {
+                            db.api_add_link(link)
+                                .then(function (response) {
+                                    console.log(response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                        }
                     });
 
                     d3.select(window).on('keydown', function () {
@@ -71,8 +119,39 @@
                         if (key === 8 || key === 46) {
                             if (dThreeGraph.selection != null) {
                                 dThreeGraph.removeItem(dThreeGraph.selection);
-                                return db.store_graph(dThreeGraph.serialize());
+                                return;
                             }
+                        }
+                    });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:remove-nodes', (data) => {
+                        db.store_graph(dThreeGraph.serialize());
+                        if (navigator.onLine) {
+                            db.api_delete_nodes(data.removedNodes)
+                                .then(function (response) {
+                                    console.log(response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                        }
+                    });
+
+                    dThreeGraph.eventsEmitter.subscribe('event:remove-links', removedLinks => {
+                        db.store_graph(dThreeGraph.serialize());
+                        removedLinks = removedLinks.map(item => {
+                            item.source = item.source.id;
+                            item.target = item.target.id;
+                            return item;
+                        })
+                        if (navigator.onLine) {
+                            db.api_delete_links(removedLinks)
+                                .then(function (response) {
+                                    console.log(response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
                         }
                     });
 

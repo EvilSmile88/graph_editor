@@ -8,8 +8,9 @@ const nodeValidator = joi.object().keys({
   weight: joi.number(),
   px: joi.number(),
   py: joi.number(),
+  type: joi.string(),
   fixed: joi.number(),
-  id: joi.boolean(),
+  id: joi.number(),
 });
 
 module.exports = {

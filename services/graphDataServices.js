@@ -1,4 +1,5 @@
 const {dataBaseURL, dataBaseAuthName, dataBaseAuthPassword} = require("../config/keys");
+var logger = require('../utils/logger');
 
 const Database = require('arangojs');
 const aqlQuery = Database.aqlQuery;

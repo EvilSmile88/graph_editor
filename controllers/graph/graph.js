@@ -14,7 +14,7 @@ function get(req, res, next) {
             res.send(list);
         },
         function (err) {
-            logger.error(err);
+            logger.error(err.message);
             res.status(500).send(internalServerError)
         }
     );
@@ -31,7 +31,7 @@ function update(req, res, next) {
                 res.send({result: 'Success'})
             },
             function (err) {
-                logger.error(err);
+                logger.error(err.message);
                 res.status(500).send(internalServerError)
             }
         );
@@ -45,7 +45,7 @@ function deleteNode(req, res, next) {
             res.send({result: 'Success'})
         },
         function (err) {
-            logger.error(err);
+            logger.error(err.message);
             res.status(500).send(internalServerError)
         }
     );

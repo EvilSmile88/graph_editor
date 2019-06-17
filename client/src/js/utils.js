@@ -17,11 +17,7 @@
                 var index = _getRandomInt( 0, parts.length - 1 );
                 id += parts[index];
             }
-
             return id;
         }
-
-
     }
-
 })();

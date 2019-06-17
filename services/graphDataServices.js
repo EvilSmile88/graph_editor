@@ -1,14 +1,10 @@
 const {dataBaseURL, dataBaseAuthName, dataBaseAuthPassword} = require("../config/keys");
-
 const Database = require('arangojs');
 const aqlQuery = Database.aqlQuery;
 const db = new Database(dataBaseURL);
 db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 
 db.useDatabase(process.env.DB || 'graph-dev');
-
-const nodesCollection = db.collection('GraphNodes');
-
 
 module.exports = {
 
@@ -51,20 +47,22 @@ module.exports = {
         } catch (err) {
             console.log(err)
         }
+    },
+
+    addNode: async function (node) {
         try {
-            const cursor = await db.query(aqlQuery`UPSERT { user: ${graph.user}} INSERT ${graph} UPDATE ${graph} IN GraphData`);
-            const result = await cursor.all();
+            const newNode = {...node, '_key': `${node.id}`};
+            const result = await db.query(aqlQuery`INSERT ${newNode} IN GraphNodes`);
             return result;
         } catch (err) {
             console.log(err)
         }
     },
 
-    addNode: async function (node) {
+    updateNode: async function (node) {
         try {
-            const newNode = {...node, '_key': `${node.id}`};
-            await nodesCollection.save(newNode);
-            return newNode;
+            const result = await db.query(aqlQuery`UPSERT { id: ${node.id}} INSERT ${node} UPDATE ${node} IN GraphNodes`);
+            return result;
         } catch (err) {
             console.log(err)
         }
@@ -90,6 +88,16 @@ module.exports = {
                 console.log(err)
             }
         })
+    },
+
+    addLink: async function (link) {
+        try {
+            const edge = {...link, '_from': `GraphNodes/${link.source}`, '_to': `GraphNodes/${link.target}`};
+            const cursor = await db.query(aqlQuery`UPSERT { source: ${link.source}, target: ${link.target}} INSERT ${edge} UPDATE ${edge} IN GraphDataEdge`);
+            const result = await cursor.all();
+        } catch (err) {
+            console.log(err)
+        }
     },
 
     getGraph: async function () {

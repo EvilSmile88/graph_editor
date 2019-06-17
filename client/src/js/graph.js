@@ -355,7 +355,7 @@ export class Graph {
             */
             if (that.addLink(that.new_link_source, d) != null) {
                 that.update();
-                that.eventsEmitter.emit('event:add-link', that.new_link_source);
+                that.eventsEmitter.emit('event:add-link', {editable: true, source: that.new_link_source.id, target: d.id});
                 return d3.event.preventDefault();
             }
         }));

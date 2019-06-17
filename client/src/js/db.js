@@ -25,50 +25,12 @@
         });
     };
 
-    window.db.store_graph = function (graph, storeToDB = true) {
+    window.db.store_graph = function (graph) {
         if (!user.is) {
             return
         }
         graph = {...graph, user: gunUserName};
         user.get('graph').put(JSON.stringify(graph));
-        if (navigator.onLine && storeToDB) {
-            fetch(env.API_URL + 'graph', {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: "PATCH",
-                body: JSON.stringify(graph)
-            })
-                .then(function (response) {
-                })
-                .catch(error => {
-                    console.log(error)
-                });
-        }
-    };
-
-    window.db.remove_nodes = function (graph, storeToDB = true, nodes) {
-        if (!user.is) {
-            return
-        }
-        graph = {...graph, user: gunUserName};
-        user.get('graph').put(JSON.stringify(graph));
-        if (navigator.onLine && storeToDB) {
-            fetch(env.API_URL + 'graphNodes', {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: "DELETE",
-                body: JSON.stringify(nodes)
-            })
-                .then(function (response) {
-                })
-                .catch(error => {
-                    console.log(error)
-                });
-        }
     };
 
     window.db.on_gun_update = function (callback) {
@@ -82,14 +44,59 @@
         }
     }
 
-    window.db.api_add_node = (node) => fetch(env.API_URL + 'addNode', {
+    window.db.api_graph_force_update = (node) => fetch(env.API_URL + 'graph', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "PATCH",
+        body: JSON.stringify(node)
+    })
+
+    window.db.api_add_node = (node) => fetch(env.API_URL + 'node', {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         method: "POST",
         body: JSON.stringify(node)
-    })
+    });
+
+    window.db.api_update_node = (node) => fetch(env.API_URL + 'node', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "PATCH",
+        body: JSON.stringify(node)
+    });
+
+    window.db.api_delete_nodes = (nodes) => fetch(env.API_URL + 'nodes', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "DELETE",
+        body: JSON.stringify(nodes)
+    });
+
+    window.db.api_delete_links = (nodes) => fetch(env.API_URL + 'links', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "DELETE",
+        body: JSON.stringify(nodes)
+    });
+
+    window.db.api_add_link = (nodes) => fetch(env.API_URL + 'link', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(nodes)
+    });
 
 }).call(this);
 

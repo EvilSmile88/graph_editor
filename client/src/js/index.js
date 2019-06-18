@@ -119,8 +119,7 @@
                         input.val(editNode.label || editNode.id);
 
                         const onEscape = function (event) {
-                            const key = event.keyCode;
-                            if (key === 27) {
+                            if ((event.code && event.code.toLowerCase() === 'escape') || event.keyCode === 27) {
                                 input.val('');
                                 modal.css('display', 'none');
                                 removeEventListener("keydown", onEscape)

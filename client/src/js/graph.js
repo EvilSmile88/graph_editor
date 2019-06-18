@@ -142,6 +142,13 @@ export class Graph {
             return (d.editableBy && d.editableBy !== this.userID)
         });
 
+        this.vis.selectAll('.node').data(this.data.nodes, function (d) {
+            const svgNode = document.querySelector(`#node_${d.id}`);
+            if (svgNode && d.label) {
+                svgNode.querySelector('text').textContent = d.label.length > 6 ? `${d.label.slice(0, 6)}..` : d.label
+            }
+        });
+
         new_nodes = nodes.enter().append('g').attr('class', 'node').on('click', ((d) => {
             /* SELECTION
             */
@@ -375,9 +382,6 @@ export class Graph {
         this.data.nodes = this.data.nodes.map(node => {
             if (node.id === updatedNode.id) {
                 let label = updatedNode.label;
-
-                document.querySelector(`#node_${updatedNode.id}`).querySelector('text')
-                    .textContent = updatedNode.label.length > 6 ? `${updatedNode.label.slice(0, 6)}..` : updatedNode.label;
                 return updatedNode;
             }
             return node;

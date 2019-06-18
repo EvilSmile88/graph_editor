@@ -8,7 +8,6 @@ db.useBasicAuth(dataBaseAuthName, dataBaseAuthPassword);
 
 db.useDatabase(process.env.DB || 'graph-dev');
 
-const nodesCollection = db.collection('GraphNodes');
 const graph = db.graph("TestGraph");
 const collection = graph.edgeCollection("GraphDataEdge");
 
@@ -16,10 +15,9 @@ module.exports = {
 
     // Updates all graph data included nodes and relationship between nodes.
     // Stores data in Arango DB Edge collection
+    // Need to call when restoring the network connection to patch all changes made by the user.
+    // TODO: optimize
     forceUpdateGraph: async function (graph) {
-        graph.links.forEach( (link) => {
-            this.addLink(link)
-        });
         graph.nodes.forEach(async function (node, index) {
             try {
                 const newNode = {...node, '_key': `${node.id}`};
@@ -51,6 +49,18 @@ module.exports = {
             logger.error(err.message);
             throw err;
         }
+        try {
+            const storedLinks = await this.getLinks();
+            const newLinks = graph.links
+                .filter(currentLink => !storedLinks.find(storedLink => currentLink.source === storedLink.source && currentLink.target === storedLink.target));
+            if (newLinks.length) {
+                newLinks.forEach((link) => this.addLink(link));
+            }
+        } catch (err) {
+            logger.error(err.message);
+            throw err;
+        }
+
     },
 
     // Add new node to document collection
@@ -120,19 +130,6 @@ module.exports = {
               const edge = {...link, '_key': `${link.source}-${link.target}`};
               const result = await collection.save(edge, `GraphNodes/${link.source}`, `GraphNodes/${link.target}`);
               return result;
-        } catch (err) {
-            logger.error(err.message);
-            throw err;
-        }
-    },
-
-    // Returns all nodes from document collection.
-    // Uses plain AQL query
-    getGraph: async function () {
-        try {
-            const cursor = await db.query(aqlQuery`FOR x IN GraphData RETURN x`);
-            const result = await cursor.next();
-            return result;
         } catch (err) {
             logger.error(err.message);
             throw err;

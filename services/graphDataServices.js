@@ -91,8 +91,7 @@ module.exports = {
     removeNodes: async function (nodes) {
         nodes.forEach(async function (node) {
             try {
-                //
-                //await db.query(aqlQuery`FOR node IN GraphNodes FILTER node.id == ${node.id} REMOVE node IN GraphNodes`);
+                await db.query(aqlQuery`FOR node IN GraphNodes FILTER node.id == ${node.id} REMOVE node IN GraphNodes`);
                 const edges = await collection.edges(`GraphNodes/${node.id}`);
                 edges.map(async edge => { await collection.remove(edge._id);});
             } catch (err) {

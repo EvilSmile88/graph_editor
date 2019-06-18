@@ -11,6 +11,7 @@ const nodeValidator = joi.object().keys({
   type: joi.string(),
   fixed: joi.number(),
   id: joi.number(),
+  label: joi.string(),
 });
 
 module.exports = {

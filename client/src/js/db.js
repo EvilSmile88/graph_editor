@@ -107,18 +107,21 @@ const initGraphData = {
         nodes: [
             {
                 id: '1',
+                label: '1',
                 x: 493,
                 y: 364,
                 type: 'X',
                 editable: true
             }, {
                 id: '2',
+                label: '2',
                 x: 442,
                 y: 365,
                 type: 'X',
                 editable: false
             }, {
                 id: '3',
+                label: '3',
                 x: 467,
                 y: 314,
                 type: 'X',

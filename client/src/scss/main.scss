@@ -3,6 +3,9 @@ body {
   justify-content: center;
   background-color: #F8F8F8;
   position: relative;
+  * {
+    box-sizing: border-box;
+  }
 }
 
 .net-connection {
@@ -27,6 +30,7 @@ body {
 .node {
   cursor: pointer;
   transition: opacity ease-in 0.3s;
+  width: 132px;
   & > :not(text) {
     stroke-width: 4px;
   }
@@ -114,7 +118,40 @@ body {
   svg {
     cursor: pointer;
     &:not(:last-child) {
-      padding-right: 6px;
+      margin-right: 6px;
+    }
+  }
+}
+
+.modal {
+  position: fixed;
+  z-index: 99;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0, 0.2);
+  display: none;
+  form {
+    margin-top: -100px;
+    transform-origin: center center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 20px;
+    h2 {
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      color: white;
+      background-color: #55c63c;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 20px;
+      margin-top: 20px;
+      text-align: center;
+      border: none;
     }
   }
 }

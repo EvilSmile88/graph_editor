@@ -75,7 +75,6 @@
 
                     dThreeGraph.eventsEmitter.subscribe('event:drag-node-end', node => {
                         db.store_graph(dThreeGraph.serialize());
-                        db.store_graph(dThreeGraph.serialize());
                         if (navigator.onLine) {
                             db.api_update_node(node)
                                 .then(function (response) {
@@ -113,10 +112,55 @@
                         }
                     });
 
+                    dThreeGraph.eventsEmitter.subscribe('event:start-edit-node-label', editNode => {
+                        const modal = $("#edit-node-modal");
+                        const input = modal.find("#node-label");
+                        modal.css('display', 'flex');
+                        input.val(editNode.label || editNode.id);
+
+                        const onEscape = function (event) {
+                            const key = event.keyCode;
+                            if (key === 27) {
+                                input.val('');
+                                modal.css('display', 'none');
+                                removeEventListener("keydown", onEscape)
+                            }
+                        };
+
+                        const onFormSubmit = function (event) {
+                            event.preventDefault();
+                            const updatedNode = {
+                                ...dThreeGraph.selection,
+                                label: event.target.elements['node-label'].value
+                            }
+                            dThreeGraph.updateNodeLabel(updatedNode);
+                            modal.css('display', 'none');
+                            return;
+                        };
+
+                        window.addEventListener("keydown", onEscape);
+                        modal.find('form').on("submit", onFormSubmit);
+                        return;
+                    });
+
+
+                    dThreeGraph.eventsEmitter.subscribe('event:end-edit-node-label', node => {
+                        db.store_graph(dThreeGraph.serialize());
+                        if (navigator.onLine) {
+                            db.api_update_node(node)
+                                .then(function (response) {
+                                    console.log(333, response)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                        }
+                    });
+
                     d3.select(window).on('keydown', function () {
                         const key = d3.event.keyCode;
                         if (key === 8 || key === 46) {
-                            if (dThreeGraph.selection != null) {
+                            if (dThreeGraph.selection != null && dThreeGraph.tool === 'pointer') {
                                 dThreeGraph.removeItem(dThreeGraph.selection);
                                 return;
                             }

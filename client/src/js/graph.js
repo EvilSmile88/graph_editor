@@ -22,7 +22,7 @@ export class Graph {
         return this.data;
     }
 
-   serialize() {
+    serialize() {
         /* PERSISTENCE - return a copy of the graph, with redundancies (whole nodes in links pointers) removed. also include the last_index property, to persist it also*/
         var l;
         return {
@@ -45,7 +45,7 @@ export class Graph {
         };
     };
 
-    objectify (graph) {
+    objectify(graph) {
         /* resolve node IDs (not optimized at all!)
         */
         var l, n, _i, _len, _ref, _results;
@@ -76,7 +76,7 @@ export class Graph {
         return _results;
     };
 
-    initLayout (container, width, height) {
+    initLayout(container, width, height) {
         this.layoutHeight = height;
         this.layoutWidth = width;
         container.call(d3.behavior.zoom().scaleExtent([0.5, 8]).on('zoom', (() => {
@@ -90,13 +90,13 @@ export class Graph {
         this.vis.append('rect').attr('class', 'overlay').attr('x', -500000).attr('y', -500000).attr('width', 1000000).attr('height', 1000000).on('click', (function (d) {
             /* SELECTION
             */
-            d3.selectAll('.node').classed('selected', false);
+            d3.selectAll('.node').classed('selected', false)
             return d3.selectAll('.link').classed('selected', false);
         }));
 
         /* initialize the force layout
         */
-        this.force = d3.layout.force().size([width, height]).charge(-400).linkDistance(60).on('tick', ( () => {
+        this.force = d3.layout.force().size([width, height]).charge(-400).linkDistance(60).on('tick', (() => {
             /* update nodes and links
             */
             this.vis.selectAll('.node').attr('transform', function (d) {
@@ -123,7 +123,7 @@ export class Graph {
         });
     }
 
-    update () {
+    update() {
         /* update the layout
         */
         var links, new_nodes, nodes;
@@ -138,7 +138,7 @@ export class Graph {
         */
         nodes = this.vis.selectAll('.node').data(this.data.nodes, function (d) {
             return d.id;
-        }).classed( 'node--disabled', (d) => {
+        }).classed('node--disabled', (d) => {
             return (d.editableBy && d.editableBy !== this.userID)
         });
 
@@ -178,31 +178,53 @@ export class Graph {
         } else {
             new_nodes.call(this.drag);
         }
-        new_nodes.filter((d) => {
-            return d.editable;
-        }).append('circle').attr('r', 18).attr('stroke', (d) => {
-            return this.colorify(d.type);
-        }).attr('fill', (d) => {
+        new_nodes.attr('id', d => `node_${d.id}`)
+            .filter((d) => d.editable)
+            .append('rect')
+            .attr('x', -45)
+            .attr('y', -16)
+            .attr('width', 90)
+            .attr('height', 32)
+            .attr('rx', 8)
+            .attr('ry', 8)
+            .attr('stroke', (d) => {
+                return this.colorify(d.type);
+            }).attr('fill', (d) => {
             return d3.hcl(this.colorify(d.type)).brighter(3);
         });
-        new_nodes.filter( (d) => {
-            return !d.editable;
-        }).append('rect').attr('x', -16).attr('y', -16).attr('width', 32).attr('height', 32).attr('stroke', (d) => {
-            return this.colorify(d.type);
-        }).attr('fill', (d) => {
+        new_nodes
+            .attr('id', d => `node_${d.id}`)
+            .filter((d) => {
+                return !d.editable;
+            }).append('rect')
+            .attr('x', -45)
+            .attr('y', -16)
+            .attr('width', 90)
+            .attr('height', 32)
+            .attr('stroke', (d) => {
+                return this.colorify(d.type);
+            }).attr('fill', (d) => {
             return d3.hcl(this.colorify(d.type)).brighter(3);
         });
         /* draw the label
         */
-        new_nodes.append('text').text((d) => {
-            return d.id;
-        }).attr('dy', '0.35em').attr('fill', (d) => {
-            return this.colorify(d.type);
-        });
+        new_nodes
+            .append('text').text((d) => {
+            if (d.label) {
+                if (d.label.length > 6) {
+                    return `${d.label.slice(0, 6)}..`
+                }
+                return d.label;
+            }
+            return d.id
+        })
+            .attr('fill', (d) => this.colorify(d.type))
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'middle');
         return nodes.exit().remove();
     };
 
-    initToolBar (toolbar, library) {
+    initToolBar(toolbar, library) {
 
         this.nodeTypes.forEach((type) => {
             var new_btn;
@@ -232,7 +254,7 @@ export class Graph {
             if (this.drag_link != null) return this.drag_link.remove();
         }));
         const global = this;
-        d3.selectAll('.tool').on('click', function() {
+        d3.selectAll('.tool').on('click', function () {
             var new_tool, nodes;
             d3.selectAll('.tool').classed('active', false);
             d3.select(this).classed('active', true);
@@ -253,6 +275,17 @@ export class Graph {
                 */
                 nodes.call(global.drag);
             }
+            if (new_tool === 'edit') {
+                nodes.on('mouseup', () => {
+                    setTimeout(() => {
+                        if (global.selection.editable) {
+                            global.eventsEmitter.emit("event:start-edit-node-label", global.selection)
+                        }
+                    }, 200)
+                })
+            } else {
+                nodes.on('mouseup', null)
+            }
             if (new_tool === 'add_node') {
                 library.show();
             } else {
@@ -262,21 +295,23 @@ export class Graph {
         });
     }
 
-    addNode (type) {
+    addNode(type) {
+        const id = this.data.last_index++;
         const n = {
-            id: this.data.last_index++,
+            id: id,
+            label: `${id}`,
             x: this.layoutWidth / 2,
             y: this.layoutHeight / 2,
             type: type,
             editable: true
         };
         this.data.nodes.push(n);
-        this.eventsEmitter.emit("event:add-node", n)
+        this.eventsEmitter.emit("event:add-node", n);
         return n;
     };
 
 
-    removeItem (condemned) {
+    removeItem(condemned) {
         if (this.selection && condemned.editable) {
             /* remove the given node or link from the graph, also deleting dangling links if a node is removed
          */
@@ -297,15 +332,14 @@ export class Graph {
                     }
                     return l.source.id !== condemned.id && l.target.id !== condemned.id;
                 });
-                this.eventsEmitter.emit("event:remove-nodes", { removedNodes, removedLinks });
+                this.eventsEmitter.emit("event:remove-nodes", {removedNodes, removedLinks});
                 return this.data.links;
             } else if (Array.prototype.indexOf.call(this.data.links, condemned) >= 0) {
-                this.data.links = this.data.links.filter( (l) => {
+                this.data.links = this.data.links.filter((l) => {
                     const isRemoved = l.source.id === condemned.source.id && l.target.id === condemned.target.id;
                     if (isRemoved) {
                         removedLinks.push(l);
                     }
-                    console.log(1231, (l.source.id !== condemned.source.id) && (l.target.id !== condemned.target.id))
                     return (l.source.id !== condemned.source.id) || (l.target.id !== condemned.target.id);
                 });
                 this.eventsEmitter.emit("event:remove-links", removedLinks);
@@ -316,7 +350,7 @@ export class Graph {
         }
     };
 
-    addLink (source, target) {
+    addLink(source, target) {
         /* avoid links to self
         */
         var l, link, _i, _len, _ref;
@@ -337,7 +371,23 @@ export class Graph {
         return l;
     };
 
-    dragAddLink (selection, that) {
+    updateNodeLabel(updatedNode) {
+        this.data.nodes = this.data.nodes.map(node => {
+            if (node.id === updatedNode.id) {
+                let label = updatedNode.label;
+
+                document.querySelector(`#node_${updatedNode.id}`).querySelector('text')
+                    .textContent = updatedNode.label.length > 6 ? `${updatedNode.label.slice(0, 6)}..` : updatedNode.label;
+                return updatedNode;
+            }
+            return node;
+        });
+        this.update();
+        this.eventsEmitter.emit('event:end-edit-node-label', updatedNode);
+        return updatedNode;
+    };
+
+    dragAddLink(selection, that) {
         return selection.on('mousedown.add_link', ((d) => {
             var p;
             that.new_link_source = d;
@@ -356,7 +406,11 @@ export class Graph {
             */
             if (that.addLink(that.new_link_source, d) != null) {
                 that.update();
-                that.eventsEmitter.emit('event:add-link', {editable: true, source: that.new_link_source.id, target: d.id});
+                that.eventsEmitter.emit('event:add-link', {
+                    editable: true,
+                    source: that.new_link_source.id,
+                    target: d.id
+                });
                 return d3.event.preventDefault();
             }
         }));

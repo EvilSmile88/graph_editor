@@ -1,0 +1,12 @@
+## GUN
+
+Run `npm run gun` for a gun server. Navigate to `http://localhost:8765/gun`.
+
+## Development server
+
+Run `npm run dev` (this script start client and gun server at the same time) for a dev server. Navigate to `http://localhost:8000/`. 
+The app will automatically reload if you change any of the source files.
+
+## Build
+
+Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.

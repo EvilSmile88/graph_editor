@@ -1,0 +1,23 @@
+{
+  "name": "Mesh",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp start",
+    "start:mesh": "gulp start:mesh",
+    "build": "gulp build",
+    "build:dependencies": "gulp build:dependencies"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-sass": "^3.2.1",
+    "gulp-server-livereload": "^1.9.2",
+    "gulp-concat": "^2.6.1"
+  }
+}

@@ -4,9 +4,10 @@
   "main": "index.js",
   "scripts": {
     "start": "gulp start",
-    "start:mesh": "gulp start:mesh",
     "build": "gulp build",
-    "build:dependencies": "gulp build:dependencies"
+    "build:js": "gulp js",
+    "build:dependencies": "gulp build:dependencies",
+    "gulp": "./node_modules/gulp/bin/gulp.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,8 +17,9 @@
     "concurrently": "^4.1.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.1.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
     "gulp-sass": "^3.2.1",
-    "gulp-server-livereload": "^1.9.2",
-    "gulp-concat": "^2.6.1"
+    "gulp-server-livereload": "^1.9.2"
   }
 }

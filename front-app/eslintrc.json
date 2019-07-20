@@ -9,7 +9,7 @@
       }
     ],
     "prettier/prettier": "error",
-    "max-len": ["error", 80]
+    "max-len": ["error", 120]
   },
   "env": {
     "browser": true

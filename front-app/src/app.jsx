@@ -7,9 +7,9 @@ import style from "./app.css";
 const App = () => {
   return (
     <div className={style.app}>
-      <SidePopup/>
+      <SidePopup />
     </div>
-  )
+  );
 };
 
 export default hot(module)(App);

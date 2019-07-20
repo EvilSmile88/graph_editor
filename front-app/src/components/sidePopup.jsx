@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBookmark as farBookmark,
-  faCommentAlt as farCommentAlt
+  faCommentAlt as farCommentAlt,
 } from "@fortawesome/free-regular-svg-icons";
 import { faBrain } from "@fortawesome/free-solid-svg-icons/faBrain";
 

@@ -1,0 +1,10 @@
+.app {
+  font-family: 'lato', sans-serif;
+}
+
+.app * {
+  box-sizing: border-box;
+}
+
+
+

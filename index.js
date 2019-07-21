@@ -17,6 +17,8 @@ if( process.env.NODE_ENV !== 'production' ) {
 
 require("./routes/graphRoutes")(app);
 
+require("./routes/domainRoutes")(app);
+
 if( process.env.NODE_ENV === 'production' ) {
   const path = require('path');
   app.use(express.static('client/build'));

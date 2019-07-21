@@ -27,7 +27,8 @@ module.exports = merge(common, {
     new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("development")
+        NODE_ENV: JSON.stringify("development"),
+        BASE_API_URL: JSON.stringify("http://localhost:5000/api/"),
       }
     })
   ],
@@ -66,8 +67,14 @@ module.exports = merge(common, {
               // generates a unique name for each class (e.g. app__app___2x3cr)
               localIdentName: "mesh__[local]___[hash:base64:5]"
             }
-          }
+          },
           // Add additional loaders here. (e.g. sass-loader)
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
         ]
       }
     ]

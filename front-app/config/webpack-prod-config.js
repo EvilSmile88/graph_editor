@@ -36,7 +36,8 @@ module.exports = merge(common, {
     // Set process.env.NODE_ENV to production
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("production")
+        NODE_ENV: JSON.stringify("production"),
+        BASE_API_URL: JSON.stringify("/api/"),
       }
     }),
     // Extract text/(s)css from a bundle, or bundles, into a separate file.
@@ -76,8 +77,11 @@ module.exports = merge(common, {
                 // generates a unique name for each class (e.g. app__app___2x3cr)
                 localIdentName: "mesh__[local]___[hash:base64:5]"
               }
-            }
+            },
             // Add additional loaders here. (e.g. sass-loader)
+            {
+              loader: 'sass-loader',
+            },
           ]
         })
       }

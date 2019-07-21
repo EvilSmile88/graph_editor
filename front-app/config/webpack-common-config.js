@@ -17,6 +17,8 @@ module.exports = {
     alias: {
       Components: path.resolve(paths.appSrc, "components"),
       Containers: path.resolve(paths.appSrc, "containers"),
+      Contexts: path.resolve(paths.appSrc, "contexts"),
+      Services: path.resolve(paths.appSrc, "services"),
       Utils: path.resolve(paths.appSrc, "utils")
     }
   },

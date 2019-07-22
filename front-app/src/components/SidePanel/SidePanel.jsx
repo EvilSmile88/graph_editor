@@ -1,16 +1,15 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import PanelContext from "Contexts/PanelContext";
 import Avatar from "Components/Avatar/Avatar";
+import PanelTabs from "Components/PanelTabs/PanelTabs";
+import DomainContext from "Contexts/DomainContext";
 
 import style from "./SidePanel.scss";
-import PanelTabs from "../PanelTabs/PanelTabs";
 
-const SidePanel = props => {
+const SidePanel = () => {
   // TODO: display list of domains;
-  // eslint-disable-next-line no-unused-vars
-  const { loading, domains } = props;
   const { collapsed } = useContext(PanelContext);
+  const { loading } = useContext(DomainContext);
   return (
     <div className={style.panel}>
       <div className={style.panel__header}>
@@ -25,16 +24,6 @@ const SidePanel = props => {
       </div>
     </div>
   );
-};
-
-SidePanel.defaultProps = {
-  loading: false,
-  domains: [],
-};
-
-SidePanel.propTypes = {
-  loading: PropTypes.bool,
-  domains: PropTypes.arrayOf(PropTypes.any),
 };
 
 export default SidePanel;

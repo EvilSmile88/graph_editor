@@ -16,7 +16,7 @@ module.exports = {
     // 'Components/button' === '../../../components/button'
     alias: {
       Components: path.resolve(paths.appSrc, "components"),
-      Containers: path.resolve(paths.appSrc, "containers"),
+      Constants: path.resolve(paths.appSrc, "constants"),
       Contexts: path.resolve(paths.appSrc, "contexts"),
       Services: path.resolve(paths.appSrc, "services"),
       Utils: path.resolve(paths.appSrc, "utils")

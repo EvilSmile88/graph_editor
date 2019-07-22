@@ -20,6 +20,7 @@ const PanelTabs = props => {
   const { isVertical, loading } = props;
   const verticalTabs = [
     {
+      // FONT_AWESOME: used the free equivalent of "far fa-brain"
       icon: faBrain,
       tabName: "Topic",
       onClick: closePanel,
@@ -40,6 +41,7 @@ const PanelTabs = props => {
   const horizontalTabs = [
     ...verticalTabs,
     {
+      // FONT_AWESOME: used the free equivalent of "far fa-comment-alt-lines"
       icon: ["far", "comment-alt"],
       tabName: "Thought",
       id: uuid(),
@@ -50,6 +52,7 @@ const PanelTabs = props => {
       id: uuid(),
     },
     {
+      // FONT_AWESOME: used the free equivalent of "far fa-sliders-v"
       icon: faSlidersH,
       tabName: "Settings",
       id: uuid(),

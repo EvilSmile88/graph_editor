@@ -7,6 +7,7 @@ const webpack = require("webpack");
 const merge = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const paths = require("./paths");
+const packageJson = require('../package.json');
 // import common webpack config
 const common = require("./webpack-common-config.js");
 
@@ -28,6 +29,7 @@ module.exports = merge(common, {
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("development"),
+        APP_VERSION: JSON.stringify(packageJson.version),
         BASE_API_URL: JSON.stringify("http://localhost:5000/api/"),
       }
     })

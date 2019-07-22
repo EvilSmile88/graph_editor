@@ -18,6 +18,7 @@ module.exports = {
       Components: path.resolve(paths.appSrc, "components"),
       Constants: path.resolve(paths.appSrc, "constants"),
       Contexts: path.resolve(paths.appSrc, "contexts"),
+      ContextProviders: path.resolve(paths.appSrc, "contextProviders"),
       Services: path.resolve(paths.appSrc, "services"),
       Utils: path.resolve(paths.appSrc, "utils")
     }

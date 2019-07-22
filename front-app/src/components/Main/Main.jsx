@@ -16,11 +16,15 @@ const Main = () => {
     ApiService.get(API_ENDPOINTS.DOMAIN)
       .then(res => {
         openPanel();
-        loadDomainsSuccess(res.data);
+        if (res.data.length) {
+          loadDomainsSuccess(res.data);
+        } else {
+          loadDomainsFail("Sorry!. No Data.");
+        }
       })
-      .catch(error => {
+      .catch(() => {
         openPanel();
-        loadDomainsFail(error);
+        loadDomainsFail("Sorry! Something was wrong.");
       });
   }, []);
 

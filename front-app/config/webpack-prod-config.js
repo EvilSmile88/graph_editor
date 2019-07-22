@@ -8,7 +8,7 @@ const webpack = require("webpack");
 const merge = require("webpack-merge");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+const packageJson = require('../package.json');
 const paths = require("./paths");
 const common = require("./webpack-common-config.js");
 
@@ -37,6 +37,7 @@ module.exports = merge(common, {
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production"),
+        APP_VERSION: JSON.stringify(packageJson.version),
         BASE_API_URL: JSON.stringify("/api/"),
       }
     }),

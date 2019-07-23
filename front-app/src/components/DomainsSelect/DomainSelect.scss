@@ -1,0 +1,42 @@
+.domain_select__container {
+  display: flex;
+  position: relative;
+  min-height: 44px;
+  align-items: flex-end;
+  margin: -4px 6px 0;
+  padding: 6px;
+  border-radius: 0 0 6px 6px;
+  background-color: var(--MAIN_THEME_COLOR);
+
+  & > div {
+    display: flex;
+    align-items: center;
+    &:after {
+      content: "";
+      position: absolute;
+      right: 0;
+      border: 5px solid var(--MAIN_PANEL_TEXT_COLOR);
+      width: 0;
+      height: 0;
+      border-bottom: none;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      pointer-events: none;
+    }
+  }
+  select {
+    display: block;
+    font-size: 16px;
+    width: 100px;
+    border: none;
+    border-bottom: 1px dashed rgba(170, 170, 170, 0.9);
+    background: none;
+    color: var(--MAIN_PANEL_TEXT_COLOR);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    option {
+      color: black;
+    }
+  }
+}

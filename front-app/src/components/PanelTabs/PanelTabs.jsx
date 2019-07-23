@@ -88,16 +88,14 @@ const PanelTabs = props => {
                 {loading ? (
                   tabPlaceholder
                 ) : (
-                  <button
+                  <div
                     className={[
                       style.panel__nav__tab,
                       selectedTab === tab.tabName ? style.active_tab : "",
                     ].join(" ")}
-                    disabled={tab.disabled}
-                    type="button"
                   >
                     <FontAwesomeIcon icon={tab.icon} size="2x" />
-                  </button>
+                  </div>
                 )}
               </li>
             ))

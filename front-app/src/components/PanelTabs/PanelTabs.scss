@@ -39,6 +39,7 @@
   border: none;
   padding: 8px 4px;
   will-change: opacity;
+  text-align: center;
   transition: opacity 0.3s ease-in-out;
   &:hover, &:focus {
     &:not(:disabled) {

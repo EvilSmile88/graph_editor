@@ -7,7 +7,7 @@ import DomainProvider from "./contextProviders/DomainProviders";
 
 const App = () => {
   useEffect(() => {
-    // Set global window variable to understand that bookmarklet app have been initialized
+    // Set global window variable to get understanding that bookmarklet app has been initialized
     window.meshAppVersion = process.env.APP_VERSION;
   }, []);
 

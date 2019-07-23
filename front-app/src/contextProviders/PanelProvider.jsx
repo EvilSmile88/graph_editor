@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 const PanelProvider = ({ children }) => {
   const [panelState, togglePanelState] = useState({
     collapsed: true,
+    selectedTab: null,
     openPanel: () => {
       togglePanelState(prevState => {
         return {
@@ -18,6 +19,14 @@ const PanelProvider = ({ children }) => {
         return {
           ...prevState,
           collapsed: true,
+        };
+      });
+    },
+    selectTab: tab => {
+      togglePanelState(prevState => {
+        return {
+          ...prevState,
+          selectedTab: tab,
         };
       });
     },

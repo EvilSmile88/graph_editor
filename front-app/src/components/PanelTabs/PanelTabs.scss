@@ -38,15 +38,21 @@
   background: none;
   border: none;
   padding: 8px 4px;
-
+  will-change: opacity;
+  transition: opacity 0.3s ease-in-out;
   &:hover, &:focus {
-    @include active-tab
+    &:not(:disabled) {
+      @include active-tab
+    }
   }
-}
-
-.active_tab {
-  @include active-tab;
-  cursor: default;
+  &.active_tab {
+    @include active-tab;
+    cursor: default;
+  }
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
 }
 
 .tab_placeholder {
@@ -68,12 +74,14 @@
     .panel__nav__tab {
       width: 100%;
       padding: 6px 0;
+      cursor: default;
+      margin-bottom: 4px;
       &:hover, &:focus {
-        @include active-tab-vertical
+        background: none;
+      }
+      &.active_tab {
+        @include active-tab-vertical;
       }
     }
-  }
-  .active_tab {
-    @include active-tab-vertical;
   }
 }

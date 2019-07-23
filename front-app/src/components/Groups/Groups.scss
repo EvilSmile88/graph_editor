@@ -1,0 +1,45 @@
+@mixin active-group {
+  background-color: var(--MAIN_PANEL_TEXT_COLOR);
+  color: black;
+}
+
+.group_list {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 280px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    margin-bottom: 6px;
+    &:not(:last-of-type) {
+      margin-right: 8px;
+    }
+    button {
+      padding: 4px;
+      font-size: 12px;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--MAIN_PANEL_TEXT_COLOR);
+      transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+      will-change: color, background;
+      background: none;
+      border: 3px solid #bf2c5c;
+      border-radius: 6px;
+      cursor: pointer;
+      &:hover {
+        @include active-group;
+      }
+      &.active_group {
+        @include active-group;
+        cursor: default;
+      }
+    }
+  }
+}
+
+.error_message {
+  opacity: 0.4;
+}

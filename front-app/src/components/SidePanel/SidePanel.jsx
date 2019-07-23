@@ -4,12 +4,23 @@ import Avatar from "Components/Avatar/Avatar";
 import PanelTabs from "Components/PanelTabs/PanelTabs";
 import DomainContext from "Contexts/DomainContext";
 import DomainsSelect from "Components/DomainsSelect/DomainSelect";
+import Groups from "Components/Groups/Groups";
+import TopicMapContext from "Contexts/TopicMapContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import style from "./SidePanel.scss";
 
 const SidePanel = () => {
-  const { collapsed } = useContext(PanelContext);
-  const { loading, domains, error } = useContext(DomainContext);
+  const { collapsed, openPanel, selectTab } = useContext(PanelContext);
+  const topicMapContext = useContext(TopicMapContext);
+  const {
+    loading,
+    domains,
+    error,
+    selectDomainGroup,
+    selectedDomainGroup,
+  } = useContext(DomainContext);
   const [selectedDomain, changeSelectedDomain] = useState(null);
 
   useEffect(() => {
@@ -22,21 +33,57 @@ const SidePanel = () => {
 
   const onChangeDomain = domain => {
     changeSelectedDomain(() => domain);
+    selectDomainGroup(null);
   };
+
+  const errorMessage = (
+    <p className={style.error_message}>
+      <i>{error}</i>
+    </p>
+  );
+
+  function closeTopicMap() {
+    topicMapContext.closeMap();
+    openPanel();
+    selectTab(null);
+  }
 
   return (
     <div className={style.panel}>
       <div className={style.panel__header}>
-        <h1>{collapsed ? "m." : "mesh."}</h1>
-        {!loading && !collapsed && selectedDomain ? (
-          <DomainsSelect
-            selectedDomain={selectedDomain}
-            domains={domains}
-            onChange={onChangeDomain}
-          />
-        ) : (
-          ""
-        )}
+        <React.Fragment>
+          {topicMapContext.opened ? (
+            <button
+              onClick={closeTopicMap}
+              className={style.close_button}
+              type="button"
+            >
+              <FontAwesomeIcon icon={faTimes} size="2x" />
+            </button>
+          ) : (
+            ""
+          )}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <h1>{collapsed ? "m." : "mesh."}</h1>
+            {selectedDomainGroup && collapsed ? (
+              <span
+                title={selectedDomainGroup.name}
+                className={style.selected_group}
+              >
+                {selectedDomainGroup.name}
+              </span>
+            ) : null}
+          </div>
+          {!loading && !collapsed && selectedDomain ? (
+            <DomainsSelect
+              selectedDomain={selectedDomain}
+              domains={domains}
+              onChange={onChangeDomain}
+            />
+          ) : (
+            ""
+          )}
+        </React.Fragment>
       </div>
       {collapsed ? (
         <div className={style.panel__aside}>
@@ -44,20 +91,10 @@ const SidePanel = () => {
         </div>
       ) : (
         <div className={style.panel__main}>
-          {!collapsed && error ? <p>{error}</p> : ""}
-          {!collapsed && selectedDomain && selectedDomain.groups ? (
-            <ul className={style.group_list}>
-              {selectedDomain.groups.map(group => (
-                <li key={group.id}>
-                  <button style={{ borderColor: group.color }} type="button">
-                    {group.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            ""
-          )}
+          {!collapsed && error ? errorMessage : ""}
+          {!collapsed && selectedDomain ? (
+            <Groups selectedDomain={selectedDomain} />
+          ) : null}
         </div>
       )}
 

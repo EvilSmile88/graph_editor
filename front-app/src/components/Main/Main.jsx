@@ -4,6 +4,7 @@ import API_ENDPOINTS from "Constants/api";
 import PanelContext from "Contexts/PanelContext";
 import SidePanel from "Components/SidePanel/SidePanel";
 import DomainContext from "Contexts/DomainContext";
+import ERROR_MESSAGES from "Constants/errorMessages";
 
 const Main = () => {
   const { openPanel } = useContext(PanelContext);
@@ -19,12 +20,12 @@ const Main = () => {
         if (res.data.length) {
           loadDomainsSuccess(res.data);
         } else {
-          loadDomainsFail("Sorry!. No Data.");
+          loadDomainsFail(ERROR_MESSAGES.noData);
         }
       })
       .catch(() => {
         openPanel();
-        loadDomainsFail("Sorry! Something was wrong.");
+        loadDomainsFail(ERROR_MESSAGES.internalError);
       });
   }, []);
 

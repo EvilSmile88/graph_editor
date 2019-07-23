@@ -8,23 +8,36 @@ import {
   faCommentAlt as farCommentAlt,
   faStar as farStart,
 } from "@fortawesome/free-regular-svg-icons";
-
+import DomainContext from "Contexts/DomainContext";
 import PanelContext from "Contexts/PanelContext";
+import TopicMapContext from "Contexts/TopicMapContext";
 import PropTypes from "prop-types";
+
 import style from "./PanelTabs.scss";
 
 library.add(farBookmark, farCommentAlt, farStart);
 
 const PanelTabs = props => {
-  const { closePanel } = useContext(PanelContext);
+  const { closePanel, selectTab, selectedTab } = useContext(PanelContext);
+  const { selectedDomainGroup } = useContext(DomainContext);
+  const { openMap } = useContext(TopicMapContext);
   const { isVertical, loading } = props;
+
+  function selectTopicTab() {
+    closePanel();
+    openMap();
+    selectTab("Topic");
+  }
+
   const verticalTabs = [
     {
       // FONT_AWESOME: used the free equivalent of "far fa-brain"
       icon: faBrain,
       tabName: "Topic",
-      onClick: closePanel,
+      onClick: selectTopicTab,
       id: uuid(),
+      disabled: !selectedDomainGroup,
+      title: selectedDomainGroup ? "Open topic map" : "Please select group",
     },
     {
       icon: faDna,
@@ -76,9 +89,12 @@ const PanelTabs = props => {
                   tabPlaceholder
                 ) : (
                   <button
-                    className={style.panel__nav__tab}
+                    className={[
+                      style.panel__nav__tab,
+                      selectedTab === tab.tabName ? style.active_tab : "",
+                    ].join(" ")}
+                    disabled={tab.disabled}
                     type="button"
-                    onClick={tab.onClick}
                   >
                     <FontAwesomeIcon icon={tab.icon} size="2x" />
                   </button>
@@ -91,7 +107,12 @@ const PanelTabs = props => {
                   tabPlaceholder
                 ) : (
                   <button
-                    className={style.panel__nav__tab}
+                    className={[
+                      style.panel__nav__tab,
+                      selectedTab === tab.tabName ? style.active_tab : "",
+                    ].join(" ")}
+                    disabled={tab.disabled}
+                    title={tab.title}
                     type="button"
                     onClick={tab.onClick}
                   >

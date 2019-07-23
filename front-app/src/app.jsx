@@ -4,6 +4,8 @@ import style from "./app.scss";
 import Main from "./components/Main/Main";
 import PanelProvider from "./contextProviders/PanelProvider";
 import DomainProvider from "./contextProviders/DomainProviders";
+import TopicMapProvider from "./contextProviders/TopicMapProvider";
+import TopicMap from "./components/TopicMap/TopicMap";
 
 const App = () => {
   useEffect(() => {
@@ -13,11 +15,16 @@ const App = () => {
 
   return (
     <div className={style.app}>
-      <DomainProvider>
-        <PanelProvider>
-          <Main />
-        </PanelProvider>
-      </DomainProvider>
+      <TopicMapProvider>
+        <React.Fragment>
+          <DomainProvider>
+            <PanelProvider>
+              <Main />
+            </PanelProvider>
+          </DomainProvider>
+          <TopicMap />
+        </React.Fragment>
+      </TopicMapProvider>
     </div>
   );
 };

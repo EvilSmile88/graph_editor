@@ -1,5 +1,5 @@
 @mixin active-group {
-  background-color: var(--MAIN_PANEL_TEXT_COLOR);
+  background-color: var(--MESH_MAIN_PANEL_TEXT_COLOR);
   color: black;
 }
 
@@ -22,7 +22,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      color: var(--MAIN_PANEL_TEXT_COLOR);
+      color: var(--MESH_MAIN_PANEL_TEXT_COLOR);
       transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
       will-change: color, background;
       background: none;

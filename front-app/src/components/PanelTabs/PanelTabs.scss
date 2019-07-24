@@ -1,10 +1,10 @@
 @mixin active-tab {
-  background-color: var(--MAIN_THEME_COLOR);
+  background-color: var(--MESH_MAIN_THEME_COLOR);
   border-radius: 4px 4px 0 0;
 }
 
 @mixin active-tab-vertical {
-  background-color: var(--MAIN_THEME_COLOR);
+  background-color: var(--MESH_MAIN_THEME_COLOR);
   border-radius: 0 4px 4px 0;
 }
 
@@ -34,11 +34,11 @@
 .panel__nav__tab {
   font-size: 10px;
   cursor: pointer;
-  color: var(--MAIN_PANEL_TEXT_COLOR);
+  color: var(--MESH_MAIN_PANEL_TEXT_COLOR);
   background: none;
   border: none;
   padding: 8px 4px;
-  will-change: opacity;
+  will-change: opacity, background-color;
   text-align: center;
   transition: opacity 0.3s ease-in-out;
   &:hover {
@@ -67,7 +67,7 @@
   height: 28px;
   margin: 6px 0;
   border-radius: 50%;
-  background-color: var(--MAIN_GRAY);
+  background-color: var(--MESH_MAIN_GRAY);
 }
 
 .panel__nav_vertical {

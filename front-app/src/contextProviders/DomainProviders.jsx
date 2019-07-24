@@ -37,6 +37,20 @@ const DomainProvider = ({ children }) => {
       });
     },
     selectDomainGroup: group => {
+      if (group && group.color) {
+        document.documentElement.style.setProperty(
+          "--MAIN_THEME_COLOR",
+          group.color,
+        );
+      } else {
+        const defaultThemeColor = getComputedStyle(
+          document.documentElement,
+        ).getPropertyValue("--DEFAULT_MAIN_THEME_COLOR");
+        document.documentElement.style.setProperty(
+          "--MAIN_THEME_COLOR",
+          defaultThemeColor,
+        );
+      }
       toggleDomainState(prevState => {
         return {
           ...prevState,

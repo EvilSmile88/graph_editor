@@ -29,6 +29,12 @@
       border: 3px solid #bf2c5c;
       border-radius: 6px;
       cursor: pointer;
+      &:focus:not([data-focus-visible-added]) {
+        outline: none;
+        &::-moz-focus-inner {
+          border: 0;
+        }
+      }
       &:hover {
         @include active-group;
       }
@@ -38,6 +44,10 @@
       }
     }
   }
+}
+
+.add_group_form {
+  width: 160px
 }
 
 .error_message {

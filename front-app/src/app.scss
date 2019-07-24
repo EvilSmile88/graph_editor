@@ -2,9 +2,11 @@
   font-family: 'lato', sans-serif;
   --MAIN_THEME_COLOR: #ff6a00;
   --MAIN_BACKGROUND_COLOR: #555;
+  --MAIN_BACKGROUND_COLOR--DARKEN: #3b3b3b;
   --MAIN_GRAY: #ccc;
   --MAIN_PANEL_TEXT_COLOR: #fff;
-  --MAIN_MAP_BACKGROUND_COLOR: #fff;
+  --MAIN_MAP_BACKGROUND_COLOR: #f4f4f4;
+  --DISABLED_FIELD_COLOR: #888;
 }
 
 .app * {

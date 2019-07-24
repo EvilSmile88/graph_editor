@@ -72,4 +72,10 @@
   &:hover {
     color: black;
   }
+  &:focus:not([data-focus-visible-added]) {
+    outline: none;
+    &::-moz-focus-inner {
+      border: 0;
+    }
+  }
 }

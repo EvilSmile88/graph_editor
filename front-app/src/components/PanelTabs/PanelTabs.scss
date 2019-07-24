@@ -41,9 +41,15 @@
   will-change: opacity;
   text-align: center;
   transition: opacity 0.3s ease-in-out;
-  &:hover, &:focus {
+  &:hover {
     &:not(:disabled) {
       @include active-tab
+    }
+  }
+  &:focus:not([data-focus-visible-added]) {
+    outline: none;
+    &::-moz-focus-inner {
+      border: 0;
     }
   }
   &.active_tab {

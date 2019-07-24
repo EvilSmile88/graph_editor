@@ -35,6 +35,12 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    &:focus:not([data-focus-visible-added]) {
+      outline: none;
+      &::-moz-focus-inner {
+        border: 0;
+      }
+    }
     option {
       color: black;
     }

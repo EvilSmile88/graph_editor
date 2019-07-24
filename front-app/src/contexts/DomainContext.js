@@ -8,6 +8,7 @@ const DomainContext = createContext({
   loadDomains: () => {},
   loadDomainsSuccess: () => {},
   loadDomainsFail: () => {},
+  selectDomainGroup: () => {},
 });
 
 export default DomainContext;

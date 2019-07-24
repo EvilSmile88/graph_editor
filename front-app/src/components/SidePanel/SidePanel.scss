@@ -1,14 +1,10 @@
-@mixin active-group {
-  background-color: var(--MAIN_PANEL_TEXT_COLOR);
-  color: black;
-}
-
 .panel {
   position: fixed;
   top: 62px;
   right: -12px;
   min-width: 62px;
   min-height: 100px;
+  z-index: 2000;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -23,6 +19,7 @@
 .panel__header {
   display: flex;
   padding: 4px 0 4px 4px;
+  position: relative;
   h1 {
     font-size: 36px;
     margin: 0;
@@ -32,12 +29,23 @@
 .panel__main {
   display: flex;
   flex: 1 auto;
+  min-height: 68px;
   padding: 8px;
 }
 
 .panel__aside {
   display: flex;
   flex: 1 auto;
+}
+
+.selected_group {
+  position: relative;
+  margin-top: -8px;
+  font-size: 14px;
+  max-width: 42px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .panel__footer {
@@ -47,40 +55,21 @@
   min-height: 48px;
 }
 
-.group_list {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 280px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  li {
-    margin-bottom: 6px;
-    &:not(:last-of-type) {
-      margin-right: 8px;
-    }
-    button {
-      padding: 4px;
-      font-size: 12px;
-      max-width: 100px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: var(--MAIN_PANEL_TEXT_COLOR);
-      transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
-      will-change: color, background;
-      background: none;
-      border: 3px solid #bf2c5c;
-      border-radius: 6px;
-      cursor: pointer;
-      &:hover {
-        @include active-group;
-      }
-    }
-  }
+.error_message {
+  opacity: 0.4;
 }
 
-.active_group {
-  @include active-group;
-  cursor: default;
+.close_button {
+  position: absolute;
+  margin-top: -52px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--MAIN_GRAY);
+  will-change: color;
+  transition: color 0.2s ease-in-out;
+  &:hover {
+    color: black;
+  }
 }

@@ -4,7 +4,7 @@ const domains = [
     id: "90291",
     groups: [
       {
-        name: "exam",
+        name: "school",
         parentDomain: "abi",
         id: "10391",
         color: "#bf892a",
@@ -33,6 +33,12 @@ const domains = [
         id: "90710",
         color: "#91bfbb",
       },
+    ],
+  },
+  {
+    name: "home",
+    id: "47810",
+    groups: [
     ],
   },
 ];

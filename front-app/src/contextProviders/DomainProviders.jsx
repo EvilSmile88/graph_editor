@@ -36,6 +36,14 @@ const DomainProvider = ({ children }) => {
         };
       });
     },
+    selectDomainGroup: group => {
+      toggleDomainState(prevState => {
+        return {
+          ...prevState,
+          selectedDomainGroup: group,
+        };
+      });
+    },
   });
   return (
     <DomainContext.Provider value={domainState}>

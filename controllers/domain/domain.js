@@ -7,7 +7,7 @@ const domains = [
         name: "school",
         parentDomain: "abi",
         id: "10391",
-        color: "#bf892a",
+        color: "#fff",
       },
       {
         name: "country",

@@ -7,6 +7,7 @@
 @mixin active-tab-vertical {
   background-color: var(--MESH_MAIN_THEME_COLOR);
   border-radius: 0 4px 4px 0;
+  color: var(--MESH_MAIN_THEME_TEXT_COLOR);
 }
 
 .panel__nav {
@@ -30,6 +31,13 @@
       }
     }
   }
+  &:not(.panel__nav_vertical) {
+    .panel__nav__tab:hover {
+      &:not(:disabled) {
+        @include active-tab
+      }
+    }
+  }
 }
 
 .panel__nav__tab {
@@ -42,11 +50,6 @@
   will-change: opacity, background-color;
   text-align: center;
   transition: opacity 0.3s ease-in-out;
-  &:hover {
-    &:not(:disabled) {
-      @include active-tab
-    }
-  }
   &:focus:not([data-focus-visible-added]) {
     outline: none;
     &::-moz-focus-inner {
@@ -84,9 +87,6 @@
       padding: 6px 0;
       cursor: default;
       margin-bottom: 4px;
-      &:hover, &:focus {
-        background: none;
-      }
       &.active_tab {
         @include active-tab-vertical;
       }

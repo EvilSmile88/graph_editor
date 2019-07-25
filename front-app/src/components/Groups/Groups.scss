@@ -28,15 +28,20 @@
       background: none;
       border: 3px solid #bf2c5c;
       border-radius: 6px;
-      cursor: pointer;
       &:focus:not([data-focus-visible-added]) {
         outline: none;
         &::-moz-focus-inner {
           border: 0;
         }
       }
-      &:hover {
-        @include active-group;
+      &:not(:disabled) {
+        cursor: pointer;
+        &:hover {
+          @include active-group;
+        }
+      }
+      &:disabled {
+        opacity: 0.6;
       }
       &.active_group {
         @include active-group;

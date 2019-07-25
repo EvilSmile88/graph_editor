@@ -2,6 +2,7 @@ import { createContext } from "react";
 
 const DomainContext = createContext({
   loading: false,
+  updating: false,
   error: null,
   domains: [],
   selectedDomainGroup: null,
@@ -9,6 +10,9 @@ const DomainContext = createContext({
   loadDomainsSuccess: () => {},
   loadDomainsFail: () => {},
   selectDomainGroup: () => {},
+  addGroup: () => {},
+  addGroupSuccess: () => {},
+  addGroupFail: () => {},
 });
 
 export default DomainContext;

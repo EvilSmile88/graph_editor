@@ -1,4 +1,6 @@
-const domains = [
+const uuid = require('uuid/v1');
+
+let domains = [
   {
     name: "abi",
     id: "90291",
@@ -7,7 +9,7 @@ const domains = [
         name: "school",
         parentDomain: "abi",
         id: "10391",
-        color: "#fff",
+        color: "#ffffff",
       },
       {
         name: "country",
@@ -50,7 +52,27 @@ function get(req, res, next) {
   }, 500);
 }
 
+// TODO: use valid data instead of mock;
+function addGroup(req, res, next) {
+  const { body } = req;
+  domains = domains.map(domain => {
+    if (domain.id === body.domainId) {
+      const newGroup = {
+        parentDomain: domain.name,
+        id: uuid(),
+        ...req.body.group
+      };
+      domain.groups.push(newGroup);
+      setTimeout(() => {
+        res.send(JSON.stringify(domain));
+      }, 1000);
+    }
+    return domain;
+  })
+}
+
 
 module.exports = {
   get,
+  addGroup
 };

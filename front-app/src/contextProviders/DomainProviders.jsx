@@ -12,15 +12,16 @@ const DomainProvider = ({ children }) => {
     document.documentElement,
   ).getPropertyValue("--MESH_MAIN_PANEL_TEXT_COLOR");
 
-  const bgColorColor = getComputedStyle(
-    document.documentElement,
-  ).getPropertyValue("--MESH_MAIN_BACKGROUND_COLOR");
+  const bgColor = getComputedStyle(document.documentElement).getPropertyValue(
+    "--MESH_MAIN_BACKGROUND_COLOR",
+  );
 
   function updateTextThemeColor(color) {
-    if (colorUtil.brightnessByColor(color) <= 50) {
+    const brightness = colorUtil.brightnessByColor(color);
+    if (brightness <= 50) {
       document.documentElement.style.setProperty(
         "--MESH_MAIN_THEME_TEXT_COLOR",
-        bgColorColor,
+        bgColor,
       );
     } else {
       document.documentElement.style.setProperty(

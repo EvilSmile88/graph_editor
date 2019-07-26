@@ -5,6 +5,7 @@
   z-index: 1000;
   width: 100vw;
   height: 80vh;
-  background-color: var(--MAIN_MAP_BACKGROUND_COLOR);
-  box-shadow: 0 12px 18px rgba(0, 0, 0, 0.2);
+  min-height: 400px;
+  background-color: var(--MESH_MAIN_MAP_BACKGROUND_COLOR);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
 }

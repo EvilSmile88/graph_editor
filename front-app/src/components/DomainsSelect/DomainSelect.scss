@@ -6,8 +6,9 @@
   margin: -4px 6px 0;
   padding: 6px;
   border-radius: 0 0 6px 6px;
-  background-color: var(--MAIN_THEME_COLOR);
-
+  background-color: var(--MESH_MAIN_THEME_COLOR);
+  will-change: background-color;
+  transition: background-color 0.5s ease-in-out;
   & > div {
     display: flex;
     align-items: center;
@@ -15,7 +16,7 @@
       content: "";
       position: absolute;
       right: 0;
-      border: 5px solid var(--MAIN_PANEL_TEXT_COLOR);
+      border: 5px solid var(--MESH_MAIN_THEME_TEXT_COLOR);
       width: 0;
       height: 0;
       border-bottom: none;
@@ -31,10 +32,19 @@
     border: none;
     border-bottom: 1px dashed rgba(170, 170, 170, 0.9);
     background: none;
-    color: var(--MAIN_PANEL_TEXT_COLOR);
+    color: var(--MESH_MAIN_THEME_TEXT_COLOR);
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    &:focus:not([data-focus-visible-added]) {
+      outline: none;
+      &::-moz-focus-inner {
+        border: 0;
+      }
+    }
+    &:disabled {
+      opacity: 0.3;
+    }
     option {
       color: black;
     }

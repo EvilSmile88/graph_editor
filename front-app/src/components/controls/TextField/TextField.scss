@@ -1,0 +1,35 @@
+
+.text_field {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  input {
+    width: 100%;
+    background: none;
+    border: 3px solid var(--MESH_MAIN_BACKGROUND_COLOR--DARKEN);
+    padding: 4px;
+    font-size: 12px;
+    border-radius: 6px;
+    color: var(--MESH_MAIN_GRAY);
+    &::placeholder {
+      color: var(--MESH_MAIN_GRAY);
+      opacity: 1;
+      font-style: italic;
+    }
+    &.pr {
+      padding-right: 28px;
+    }
+
+    &:disabled {
+      background-color: var(--MESH_DISABLED_FIELD_COLOR);
+    }
+  }
+}
+
+.addon_after {
+  position: absolute;
+  right: 8px;
+  color: var(--MESH_MAIN_GRAY);
+}

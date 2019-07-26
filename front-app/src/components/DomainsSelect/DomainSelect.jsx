@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import style from "./DomainSelect.scss";
 
 const DomainsSelect = props => {
-  const { domains, selectedDomain, onChange } = props;
+  const { domains, selectedDomain, onChange, ...restProps } = props;
   const onDomainChange = event => {
     const { value } = event.target;
     onChange(domains.find(domain => domain.name === value));
@@ -17,6 +17,7 @@ const DomainsSelect = props => {
           name="domain"
           value={selectedDomain.name}
           onChange={onDomainChange}
+          {...restProps}
         >
           {domains.map(domain => (
             <option key={domain.id} value={domain.name}>

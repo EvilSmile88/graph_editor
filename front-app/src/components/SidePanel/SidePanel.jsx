@@ -20,14 +20,21 @@ const SidePanel = () => {
     error,
     selectDomainGroup,
     selectedDomainGroup,
+    updating,
   } = useContext(DomainContext);
   const [selectedDomain, changeSelectedDomain] = useState(null);
 
   useEffect(() => {
     if (domains) {
-      changeSelectedDomain(() => {
-        return domains[0];
-      });
+      if (!selectedDomain) {
+        changeSelectedDomain(() => {
+          return domains[0];
+        });
+      } else {
+        changeSelectedDomain(() => {
+          return domains.find(domain => selectedDomain.id === domain.id);
+        });
+      }
     }
   }, [domains]);
 
@@ -78,6 +85,7 @@ const SidePanel = () => {
             <DomainsSelect
               selectedDomain={selectedDomain}
               domains={domains}
+              disabled={updating}
               onChange={onChangeDomain}
             />
           ) : (

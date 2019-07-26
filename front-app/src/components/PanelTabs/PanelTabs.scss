@@ -1,11 +1,13 @@
 @mixin active-tab {
-  background-color: var(--MAIN_THEME_COLOR);
+  background-color: var(--MESH_MAIN_THEME_COLOR);
   border-radius: 4px 4px 0 0;
+  color: var(--MESH_MAIN_THEME_TEXT_COLOR);
 }
 
 @mixin active-tab-vertical {
-  background-color: var(--MAIN_THEME_COLOR);
+  background-color: var(--MESH_MAIN_THEME_COLOR);
   border-radius: 0 4px 4px 0;
+  color: var(--MESH_MAIN_THEME_TEXT_COLOR);
 }
 
 .panel__nav {
@@ -29,21 +31,29 @@
       }
     }
   }
+  &:not(.panel__nav_vertical) {
+    .panel__nav__tab:hover {
+      &:not(:disabled) {
+        @include active-tab
+      }
+    }
+  }
 }
 
 .panel__nav__tab {
   font-size: 10px;
   cursor: pointer;
-  color: var(--MAIN_PANEL_TEXT_COLOR);
+  color: var(--MESH_MAIN_PANEL_TEXT_COLOR);
   background: none;
   border: none;
   padding: 8px 4px;
-  will-change: opacity;
+  will-change: opacity, background-color;
   text-align: center;
   transition: opacity 0.3s ease-in-out;
-  &:hover, &:focus {
-    &:not(:disabled) {
-      @include active-tab
+  &:focus:not([data-focus-visible-added]) {
+    outline: none;
+    &::-moz-focus-inner {
+      border: 0;
     }
   }
   &.active_tab {
@@ -61,7 +71,7 @@
   height: 28px;
   margin: 6px 0;
   border-radius: 50%;
-  background-color: var(--MAIN_GRAY);
+  background-color: var(--MESH_MAIN_GRAY);
 }
 
 .panel__nav_vertical {
@@ -77,9 +87,6 @@
       padding: 6px 0;
       cursor: default;
       margin-bottom: 4px;
-      &:hover, &:focus {
-        background: none;
-      }
       &.active_tab {
         @include active-tab-vertical;
       }

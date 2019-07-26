@@ -1,3 +1,4 @@
+import "focus-visible";
 import React, { useEffect } from "react";
 import { hot } from "react-hot-loader";
 import style from "./app.scss";

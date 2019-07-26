@@ -9,10 +9,13 @@
   flex-direction: column;
   padding: 0;
   justify-content: space-between;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
   border-radius: 8px;
-  background-color: var(--MAIN_BACKGROUND_COLOR);
-  border: 4px solid var(--MAIN_THEME_COLOR);
-  color: var(--MAIN_PANEL_TEXT_COLOR);
+  will-change: border-color;
+  transition: border-color 0.5s ease-in-out;
+  background-color: var(--MESH_MAIN_BACKGROUND_COLOR);
+  border: 4px solid var(--MESH_MAIN_THEME_COLOR);
+  color: var(--MESH_MAIN_PANEL_TEXT_COLOR);
   transform-origin: top right;
 }
 
@@ -28,6 +31,7 @@
 
 .panel__main {
   display: flex;
+  flex-direction: column;
   flex: 1 auto;
   min-height: 68px;
   padding: 8px;
@@ -66,10 +70,16 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--MAIN_GRAY);
+  color: var(--MESH_MAIN_GRAY);
   will-change: color;
   transition: color 0.2s ease-in-out;
   &:hover {
     color: black;
+  }
+  &:focus:not([data-focus-visible-added]) {
+    outline: none;
+    &::-moz-focus-inner {
+      border: 0;
+    }
   }
 }

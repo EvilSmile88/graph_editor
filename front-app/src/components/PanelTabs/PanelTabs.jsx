@@ -19,7 +19,7 @@ library.add(farBookmark, farCommentAlt, farStart);
 
 const PanelTabs = props => {
   const { closePanel, selectTab, selectedTab } = useContext(PanelContext);
-  const { selectedDomainGroup } = useContext(DomainContext);
+  const { selectedDomainGroup, updating } = useContext(DomainContext);
   const { openMap } = useContext(TopicMapContext);
   const { isVertical, loading } = props;
 
@@ -36,7 +36,7 @@ const PanelTabs = props => {
       tabName: "Topic",
       onClick: selectTopicTab,
       id: uuid(),
-      disabled: !selectedDomainGroup,
+      disabled: !selectedDomainGroup || updating,
       title: selectedDomainGroup ? "Open topic map" : "Please select group",
     },
     {

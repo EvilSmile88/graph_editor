@@ -1,0 +1,34 @@
+@mixin addon-active {
+  transform: scale(1.2);
+  color: white;
+}
+
+.color_addon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--MESH_MAIN_GRAY);
+  .color_addon__label {
+    will-change: transform, color;
+    transform-origin: center;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+  input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    &:focus ~ .color_addon__label {
+      cursor: pointer;
+      @include addon-active
+    }
+    &:not(:disabled) ~ .color_addon__label {
+      &:hover {
+        cursor: pointer;
+        @include addon-active
+      }
+    }
+  }
+}
+
+.color_addon__disabled {}

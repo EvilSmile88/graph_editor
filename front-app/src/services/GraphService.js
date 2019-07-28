@@ -31,6 +31,7 @@ class GraphService {
   initForce(nodes, links) {
     this.force = d3
       .forceSimulation(nodes)
+      .force("charge", d3.forceManyBody().strength(-50))
       .force(
         "link",
         d3
@@ -38,14 +39,8 @@ class GraphService {
           .id(d => d.id)
           .distance(100),
       )
-      .force(
-        "center",
-        d3
-          .forceCenter()
-          .x(this.width / 2)
-          .y(this.height / 2),
-      )
-      .force("collide", d3.forceCollide([5]).iterations([5]));
+      .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+      .force("collide", d3.forceCollide(30).strength(0.5));
   }
 
   static updateGraph(selection, that) {
@@ -74,8 +69,7 @@ class GraphService {
         this.force.alphaTarget(0);
       }
       const node = d;
-      node.fx = null;
-      node.fy = null;
+      node.fixed = true;
     };
 
     return d3
@@ -100,7 +94,7 @@ class GraphService {
         .on("zoom", () => {
           const { k, x, y } = d3.event.transform;
           selection
-            .selectAll("svg")
+            .selectAll(".graph > g")
             .attr("transform", `translate(${x},${y}) scale(${k})`);
         }),
     );

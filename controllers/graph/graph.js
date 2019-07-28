@@ -148,6 +148,13 @@ const initGraphData = {
                 y: 314,
                 type: 'X',
                 editable: false
+            },{
+                id: '4',
+                label: '4',
+                x: 467,
+                y: 314,
+                type: 'X',
+                editable: false
             },
         ],
         links: [
@@ -163,12 +170,6 @@ const initGraphData = {
                 value: '2',
                 editable: false
             },
-            {
-                source: '2',
-                target: '3',
-                value: '2',
-                editable: false
-            }
         ],
         last_index: 4
     }

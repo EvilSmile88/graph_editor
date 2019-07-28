@@ -63,6 +63,7 @@ module.exports = {
 
     },
 
+
     // Add new node to document collection
     // This method uses AQL query type and demonstrates how to protect from SQL Injection attacks with AQL bind parameters
     addNode: async function (node) {

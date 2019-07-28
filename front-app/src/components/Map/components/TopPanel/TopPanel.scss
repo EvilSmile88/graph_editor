@@ -1,4 +1,4 @@
-.map_container {
+.panel {
   position: fixed;
   left: 0;
   top: 0;
@@ -6,6 +6,10 @@
   width: 100vw;
   height: 80vh;
   min-height: 400px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--MESH_MAIN_MAP_BACKGROUND_COLOR);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
 }

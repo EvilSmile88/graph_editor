@@ -5,6 +5,9 @@ import PropTypes from "prop-types";
 const TopicMapProvider = ({ children }) => {
   const [mapState, toggleMapState] = useState({
     opened: false,
+    loading: false,
+    map: null,
+    error: null,
     openMap: () => {
       toggleMapState(prevState => {
         return {
@@ -18,6 +21,34 @@ const TopicMapProvider = ({ children }) => {
         return {
           ...prevState,
           opened: false,
+        };
+      });
+    },
+    getMap: () => {
+      toggleMapState(prevState => {
+        return {
+          ...prevState,
+          map: null,
+          error: null,
+          loading: true,
+        };
+      });
+    },
+    getMapSuccess: map => {
+      toggleMapState(prevState => {
+        return {
+          ...prevState,
+          loading: false,
+          map,
+        };
+      });
+    },
+    getMapFail: error => {
+      toggleMapState(prevState => {
+        return {
+          ...prevState,
+          loading: false,
+          error,
         };
       });
     },

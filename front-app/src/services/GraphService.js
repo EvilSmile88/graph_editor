@@ -54,8 +54,8 @@ class GraphService {
         this.force.alphaTarget(0.3).restart();
       }
       const node = d;
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
+      node.fx = d3.x;
+      node.fy = d3.y;
     };
 
     const dragging = d => {
@@ -69,7 +69,8 @@ class GraphService {
         this.force.alphaTarget(0);
       }
       const node = d;
-      node.fixed = true;
+      node.fx = null;
+      node.fy = null;
     };
 
     return d3
@@ -85,19 +86,27 @@ class GraphService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  zoom(container) {
+  zoom(container, content) {
     const selection = d3.select(container);
-    selection.call(
-      d3
-        .zoom()
-        .scaleExtent([0.7, 2])
-        .on("zoom", () => {
-          const { k, x, y } = d3.event.transform;
-          selection
-            .selectAll(".graph > g")
-            .attr("transform", `translate(${x},${y}) scale(${k})`);
-        }),
-    );
+    const zoomed = () => {
+      const { k, x, y } = d3.event.transform;
+      const contentSelection = d3.select(content);
+      const graphBox = contentSelection.node().getBBox();
+      const margin = 300;
+      const worldTopLeft = [graphBox.x - margin, graphBox.y - margin];
+      const worldBottomRight = [
+        graphBox.x + graphBox.width + margin,
+        graphBox.y + graphBox.height + margin,
+      ];
+      this.d3Zoom.translateExtent([worldTopLeft, worldBottomRight]);
+      contentSelection.attr("transform", `translate(${x},${y}) scale(${k})`);
+    };
+    this.d3Zoom = d3
+      .zoom()
+      .scaleExtent([0.7, 2])
+      .on("zoom", zoomed);
+
+    selection.call(this.d3Zoom);
   }
 
   tick(container) {

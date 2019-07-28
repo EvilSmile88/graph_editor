@@ -14,8 +14,8 @@ class LinkNode extends React.Component {
   }
 
   componentDidUpdate() {
-    const { data, FORCE } = this.props;
-    this.d3Link.datum(data).call(FORCE.updateLink);
+    const { data, updateLink } = this.props;
+    this.d3Link.datum(data).call(updateLink);
   }
 
   render() {
@@ -32,9 +32,7 @@ class LinkNode extends React.Component {
 
 LinkNode.propTypes = {
   data: PropTypes.shape({ name: PropTypes.string }).isRequired,
-  FORCE: PropTypes.shape({
-    updateLink: PropTypes.func,
-  }).isRequired,
+  updateLink: PropTypes.func.isRequired,
 };
 
 export default LinkNode;

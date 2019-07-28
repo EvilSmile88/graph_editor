@@ -7,18 +7,17 @@ import Node from "../Node/Node";
 class Diagram extends React.Component {
   constructor(props) {
     super(props);
-    this.Graph = new GraphService(
-      window.innerWidth * 3,
-      window.innerHeight * 0.8 * 3,
-    );
+    this.canvasWidth = window.innerWidth;
+    this.canvasHeight = window.innerHeight * 0.8;
+    this.Graph = new GraphService(this.canvasWidth, this.canvasHeight);
   }
 
   componentDidMount() {
     const { data } = this.props;
     this.Graph.initForce(data.nodes, data.links);
-    this.Graph.zoom(this.viz);
-    this.Graph.tick(this.viz);
-    this.Graph.drag(this.viz);
+    this.Graph.zoom(this.vis, this.contentVis);
+    this.Graph.tick(this.vis);
+    this.Graph.drag(this.vis);
   }
 
   render() {
@@ -28,28 +27,33 @@ class Diagram extends React.Component {
         <LinkNode
           key={`${link.source}_${link.target}`}
           data={link}
-          FORCE={this.Graph}
+          updateLink={this.Graph.updateLink}
         />
       );
     });
 
     const nodes = data.nodes.map(node => {
-      return <Node data={node} FORCE={this.Graph} key={node.id} />;
+      return (
+        <Node data={node} updateNode={this.Graph.updateNode} key={node.id} />
+      );
     });
     return (
       <div
-        className="graph__container"
-        ref={viz => {
-          this.viz = viz;
+        ref={vis => {
+          this.vis = vis;
         }}
       >
-        <svg
-          className="graph"
-          width={this.Graph.width}
-          height={this.Graph.height}
-        >
-          <g>{links}</g>
-          <g>{nodes}</g>
+        <svg width={this.canvasWidth} height={this.canvasHeight}>
+          <g
+            fill="red"
+            ref={vis => {
+              this.contentVis = vis;
+            }}
+            className="graph-content"
+          >
+            <g>{links}</g>
+            <g>{nodes}</g>
+          </g>
         </svg>
       </div>
     );

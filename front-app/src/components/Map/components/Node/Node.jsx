@@ -29,8 +29,8 @@ class Node extends React.Component {
   }
 
   componentDidUpdate() {
-    const { data, FORCE } = this.props;
-    this.d3Node.datum(data).call(FORCE.updateNode);
+    const { data, updateNode } = this.props;
+    this.d3Node.datum(data).call(updateNode);
   }
 
   render() {
@@ -51,9 +51,7 @@ class Node extends React.Component {
 
 Node.propTypes = {
   data: PropTypes.shape({ label: PropTypes.string }).isRequired,
-  FORCE: PropTypes.shape({
-    updateNode: PropTypes.func,
-  }).isRequired,
+  updateNode: PropTypes.func.isRequired,
 };
 
 export default Node;

@@ -4,9 +4,10 @@ class GraphService {
   constructor(width, height) {
     this.width = width;
     this.height = height;
+    this.scale = 1;
     this.updateNode = selection => {
       selection.attr("style", d => {
-        const sacelIndex = this.scale || 1;
+        const sacelIndex = this.scale;
         const elementSize = d3
           .selectAll(`#node_${d.id}`)
           .node()
@@ -50,8 +51,8 @@ class GraphService {
         this.force.alphaTarget(0.3).restart();
       }
       const node = d;
-      node.fx = d3.x;
-      node.fy = d3.y;
+      node.fx = d3.event.x;
+      node.fy = d3.event.y;
     };
 
     const dragging = d => {
@@ -81,7 +82,7 @@ class GraphService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  zoom(container, content) {
+  zoom(container) {
     const selection = d3.select(container);
     const zoomed = that => {
       const { k, x, y } = d3.event.transform;
@@ -96,11 +97,8 @@ class GraphService {
       // ];
       // this.d3Zoom.translateExtent([worldTopLeft, worldBottomRight]);
       this.scale = k;
-      d3.select(content)
-        .selectAll(".links_container")
-        .attr("style", `transform: translate(${x}px,${y}px) scale(${k})`);
-      d3.select(content)
-        .selectAll(".nodes_container")
+      selection
+        .selectAll(".links_container, .nodes_container")
         .attr("style", `transform: translate(${x}px,${y}px) scale(${k})`);
     };
     this.d3Zoom = d3

@@ -49,21 +49,15 @@ class Diagram extends React.Component {
           this.vis = vis;
         }}
       >
-        <div
-          ref={vis => {
-            this.contentVis = vis;
-          }}
+        <svg
+          style={{ position: "absolute" }}
+          width={this.canvasWidth}
+          height={this.canvasHeight}
         >
-          <svg
-            style={{ position: "absolute" }}
-            width={this.canvasWidth}
-            height={this.canvasHeight}
-          >
-            <g className="links_container">{links}</g>
-          </svg>
-          <div className={["nodes_container", style.nodes_container].join(" ")}>
-            {nodes}
-          </div>
+          <g className="links_container">{links}</g>
+        </svg>
+        <div className={["nodes_container", style.nodes_container].join(" ")}>
+          {nodes}
         </div>
       </div>
     );

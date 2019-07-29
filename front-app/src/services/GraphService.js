@@ -5,18 +5,7 @@ class GraphService {
     this.width = width;
     this.height = height;
     this.updateNode = selection => {
-      selection
-        .attr("transform", d => `translate(${d.x},${d.y})`)
-        .attr("cx", d => {
-          const node = d;
-          node.x = Math.max(30, Math.min(this.width - 30, node.x));
-          return node;
-        })
-        .attr("cy", d => {
-          const node = d;
-          node.y = Math.max(30, Math.min(this.height - 30, node.y));
-          return node;
-        });
+      selection.attr("transform", d => `translate(${d.x},${d.y})`);
     };
 
     this.updateLink = selection => {
@@ -39,7 +28,6 @@ class GraphService {
           .id(d => d.id)
           .distance(100),
       )
-      .force("center", d3.forceCenter(this.width / 2, this.height / 2))
       .force("collide", d3.forceCollide(30).strength(0.5));
   }
 
@@ -69,8 +57,7 @@ class GraphService {
         this.force.alphaTarget(0);
       }
       const node = d;
-      node.fx = null;
-      node.fy = null;
+      node.fixed = true;
     };
 
     return d3

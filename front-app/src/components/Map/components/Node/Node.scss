@@ -1,0 +1,16 @@
+.node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  min-width: 20px;
+  padding: 4px;
+  white-space: nowrap;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #ff973e;
+  color: white;
+  font-size: 12px;
+  & > div {
+    position: relative;
+  }
+}

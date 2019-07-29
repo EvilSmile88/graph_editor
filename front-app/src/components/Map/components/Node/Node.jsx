@@ -1,31 +1,12 @@
 import React from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
+import style from "./Node.scss";
 
 class Node extends React.Component {
   componentDidMount() {
     const { data } = this.props;
-    this.d3Node = d3
-      .select(this.viz)
-      .datum(data)
-      .call(selection => {
-        selection
-          .select("circle")
-          .attr("r", 25)
-          .style("fill", "tomato")
-          .style("stroke", "bisque")
-          .style("stroke-width", "3px");
-
-        selection
-          .select("text")
-          .style("fill", "honeydew")
-          .style("font-weight", "600")
-          .style("text-transform", "uppercase")
-          .style("text-anchor", "middle")
-          .style("alignment-baseline", "middle")
-          .style("font-size", "10px")
-          .style("font-family", "cursive");
-      });
+    this.d3Node = d3.select(this.viz).datum(data);
   }
 
   componentDidUpdate() {
@@ -36,21 +17,26 @@ class Node extends React.Component {
   render() {
     const { data } = this.props;
     return (
-      <g
-        className="node"
+      <div
+        id={`node_${data.id}`}
+        className={["node", style.node].join(" ")}
         ref={viz => {
           this.viz = viz;
         }}
       >
-        <circle />
-        <text>{data.label}</text>
-      </g>
+        <div>
+          <span>{data.label}</span>
+        </div>
+      </div>
     );
   }
 }
 
 Node.propTypes = {
-  data: PropTypes.shape({ label: PropTypes.string }).isRequired,
+  data: PropTypes.shape({
+    label: PropTypes.string,
+    id: PropTypes.string,
+  }).isRequired,
   updateNode: PropTypes.func.isRequired,
 };
 

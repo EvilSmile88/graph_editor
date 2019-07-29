@@ -5,7 +5,15 @@ class GraphService {
     this.width = width;
     this.height = height;
     this.updateNode = selection => {
-      selection.attr("transform", d => `translate(${d.x},${d.y})`);
+      selection.attr("style", d => {
+        const sacelIndex = this.scale || 1;
+        const elementSize = d3
+          .selectAll(`#node_${d.id}`)
+          .node()
+          .getBoundingClientRect();
+        return `top: ${d.y - elementSize.height / 2 / sacelIndex}px; 
+        left: ${d.x - elementSize.width / 2 / sacelIndex}px`;
+      });
     };
 
     this.updateLink = selection => {
@@ -62,7 +70,7 @@ class GraphService {
 
     return d3
       .select(selection)
-      .selectAll("g.node")
+      .selectAll(".node")
       .call(
         d3
           .drag()
@@ -75,23 +83,30 @@ class GraphService {
   // eslint-disable-next-line class-methods-use-this
   zoom(container, content) {
     const selection = d3.select(container);
-    const zoomed = () => {
+    const zoomed = that => {
       const { k, x, y } = d3.event.transform;
-      const contentSelection = d3.select(content);
-      const graphBox = contentSelection.node().getBBox();
-      const margin = 300;
-      const worldTopLeft = [graphBox.x - margin, graphBox.y - margin];
-      const worldBottomRight = [
-        graphBox.x + graphBox.width + margin,
-        graphBox.y + graphBox.height + margin,
-      ];
-      this.d3Zoom.translateExtent([worldTopLeft, worldBottomRight]);
-      contentSelection.attr("transform", `translate(${x},${y}) scale(${k})`);
+      // eslint-disable-next-line no-param-reassign
+      that.scale = k;
+      // const graphBox = contentSelection.node().getBBox();
+      // const margin = 300;
+      // const worldTopLeft = [graphBox.x - margin, graphBox.y - margin];
+      // const worldBottomRight = [
+      //   graphBox.x + graphBox.width + margin,
+      //   graphBox.y + graphBox.height + margin,
+      // ];
+      // this.d3Zoom.translateExtent([worldTopLeft, worldBottomRight]);
+      this.scale = k;
+      d3.select(content)
+        .selectAll(".links_container")
+        .attr("style", `transform: translate(${x}px,${y}px) scale(${k})`);
+      d3.select(content)
+        .selectAll(".nodes_container")
+        .attr("style", `transform: translate(${x}px,${y}px) scale(${k})`);
     };
     this.d3Zoom = d3
       .zoom()
       .scaleExtent([0.7, 2])
-      .on("zoom", zoomed);
+      .on("zoom", () => zoomed(this));
 
     selection.call(this.d3Zoom);
   }

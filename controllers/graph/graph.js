@@ -129,21 +129,21 @@ const initGraphData = {
         nodes: [
             {
                 id: '1',
-                label: '1',
+                label: 'Chrisopher F.Schuetze',
                 x: 493,
                 y: 364,
                 type: 'X',
                 editable: true
             }, {
                 id: '2',
-                label: '2',
+                label: 'Title',
                 x: 442,
                 y: 365,
                 type: 'X',
                 editable: false
             }, {
                 id: '3',
-                label: '3',
+                label: 'secondary school exams',
                 x: 467,
                 y: 314,
                 type: 'X',

@@ -54,7 +54,9 @@ class Diagram extends React.Component {
           width={this.canvasWidth}
           height={this.canvasHeight}
         >
-          <g className="links_container">{links}</g>
+          <g className={["links_container", style.links_container].join(" ")}>
+            {links}
+          </g>
         </svg>
         <div className={["nodes_container", style.nodes_container].join(" ")}>
           {nodes}

@@ -9,5 +9,12 @@
 }
 
 .nodes_container {
-  display: table;
+  position: absolute;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.links_container {
+  will-change: transform;
+  backface-visibility: hidden;
 }

@@ -12,8 +12,9 @@ class GraphService {
           .selectAll(`#node_${d.id}`)
           .node()
           .getBoundingClientRect();
-        return `top: ${d.y - elementSize.height / 2 / sacelIndex}px; 
-        left: ${d.x - elementSize.width / 2 / sacelIndex}px`;
+        return `transform: translate(${d.x -
+          elementSize.width / 2 / sacelIndex}px,${d.y -
+          elementSize.height / 2 / sacelIndex}px)`;
       });
     };
 
@@ -37,7 +38,7 @@ class GraphService {
           .id(d => d.id)
           .distance(100),
       )
-      .force("collide", d3.forceCollide(30).strength(0.5));
+      .force("collide", d3.forceCollide(20).strength(0.5));
   }
 
   static updateGraph(selection, that) {
@@ -46,19 +47,23 @@ class GraphService {
   }
 
   drag(selection) {
+    let startX;
+    let startY;
     const dragStarted = d => {
       if (!d3.event.active) {
         this.force.alphaTarget(0.3).restart();
       }
       const node = d;
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
+      startX = d3.event.x;
+      startY = d3.event.y;
+      node.fx = startX;
+      node.fy = startY;
     };
 
     const dragging = d => {
       const node = d;
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
+      node.fx = startX + (d3.event.x - startX) / this.scale;
+      node.fy = startY + (d3.event.y - startY) / this.scale;
     };
 
     const dragEnded = d => {

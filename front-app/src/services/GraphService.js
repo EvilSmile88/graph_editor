@@ -89,10 +89,8 @@ class GraphService {
   // eslint-disable-next-line class-methods-use-this
   zoom(container) {
     const selection = d3.select(container);
-    const zoomed = that => {
+    const zoomed = () => {
       const { k, x, y } = d3.event.transform;
-      // eslint-disable-next-line no-param-reassign
-      that.scale = k;
       // const graphBox = contentSelection.node().getBBox();
       // const margin = 300;
       // const worldTopLeft = [graphBox.x - margin, graphBox.y - margin];
@@ -103,7 +101,10 @@ class GraphService {
       // this.d3Zoom.translateExtent([worldTopLeft, worldBottomRight]);
       this.scale = k;
       selection
-        .selectAll(".links_container, .nodes_container")
+        .selectAll(".links_container")
+        .attr("transform", `translate(${x},${y}) scale(${k})`);
+      selection
+        .selectAll(".nodes_container")
         .attr("style", `transform: translate(${x}px,${y}px) scale(${k})`);
     };
     this.d3Zoom = d3

@@ -6,7 +6,10 @@ import style from "./Node.scss";
 class Node extends React.Component {
   componentDidMount() {
     const { data } = this.props;
-    this.d3Node = d3.select(this.viz).datum(data);
+    this.d3Node = d3
+      .select(this.viz)
+      .datum(data)
+      .on("dblclick", this.unpin);
   }
 
   componentDidUpdate() {
@@ -14,12 +17,20 @@ class Node extends React.Component {
     this.d3Node.datum(data).call(updateNode);
   }
 
+  unpin(d) {
+    const node = d;
+    node.fx = null;
+    node.fy = null;
+    d3.select(this).classed(style.mesh__node_fixed, false);
+    return node;
+  }
+
   render() {
     const { data } = this.props;
     return (
       <div
-        id={`node_${data.id}`}
-        className={["node", style.node].join(" ")}
+        id={`mesh__node_${data.id}`}
+        className={["mesh__node", style.node].join(" ")}
         ref={viz => {
           this.viz = viz;
         }}

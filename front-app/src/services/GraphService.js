@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import nodeStyle from "Components/Map/components/Node/Node.scss";
 
 class GraphService {
   constructor(width, height) {
@@ -9,7 +10,7 @@ class GraphService {
       selection.attr("style", d => {
         const sacelIndex = this.scale;
         const elementSize = d3
-          .selectAll(`#node_${d.id}`)
+          .selectAll(`#mesh__node_${d.id}`)
           .node()
           .getBoundingClientRect();
         return `transform: translate(${d.x -
@@ -42,8 +43,8 @@ class GraphService {
   }
 
   static updateGraph(selection, that) {
-    selection.selectAll(".node").call(that.updateNode);
-    selection.selectAll(".link").call(that.updateLink);
+    selection.selectAll(".mesh__node").call(that.updateNode);
+    selection.selectAll(".mesh__link").call(that.updateLink);
   }
 
   drag(selection) {
@@ -54,6 +55,9 @@ class GraphService {
         this.force.alphaTarget(0.3).restart();
       }
       const node = d;
+      d3.select(selection)
+        .selectAll(`#mesh__node_${d.id}`)
+        .classed(nodeStyle.mesh__node_fixed, true);
       startX = d3.event.x;
       startY = d3.event.y;
       node.fx = startX;
@@ -76,7 +80,7 @@ class GraphService {
 
     return d3
       .select(selection)
-      .selectAll(".node")
+      .selectAll(".mesh__node")
       .call(
         d3
           .drag()
@@ -101,18 +105,18 @@ class GraphService {
       // this.d3Zoom.translateExtent([worldTopLeft, worldBottomRight]);
       this.scale = k;
       selection
-        .selectAll(".links_container")
+        .selectAll(".mesh__links_container")
         .attr("transform", `translate(${x},${y}) scale(${k})`);
       selection
-        .selectAll(".nodes_container")
+        .selectAll(".mesh__nodes_container")
         .attr("style", `transform: translate(${x}px,${y}px) scale(${k})`);
     };
     this.d3Zoom = d3
       .zoom()
-      .scaleExtent([0.7, 2])
+      .scaleExtent([0.7, 1.4])
       .on("zoom", () => zoomed(this));
 
-    selection.call(this.d3Zoom);
+    selection.call(this.d3Zoom).on("dblclick.zoom", null);
   }
 
   tick(container) {

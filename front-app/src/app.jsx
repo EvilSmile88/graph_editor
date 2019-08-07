@@ -6,7 +6,7 @@ import Main from "./components/Main/Main";
 import PanelProvider from "./contextProviders/PanelProvider";
 import DomainProvider from "./contextProviders/DomainProviders";
 import TopicMapProvider from "./contextProviders/TopicMapProvider";
-import TopicMap from "./components/TopicMap/TopicMap";
+import TopPanel from "./components/Map/components/TopPanel/TopPanel";
 
 const App = () => {
   useEffect(() => {
@@ -23,7 +23,7 @@ const App = () => {
               <Main />
             </PanelProvider>
           </DomainProvider>
-          <TopicMap />
+          <TopPanel />
         </React.Fragment>
       </TopicMapProvider>
     </div>

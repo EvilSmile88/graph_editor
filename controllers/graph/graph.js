@@ -10,15 +10,9 @@ var logger = require('../../utils/logger');
 
 // return a list of tags
 function get(req, res, next) {
-    graphDataServices.getGraph().then(
-        function (list) {
-            res.send(list);
-        },
-        function (err) {
-            logger.error(err);
-            res.status(500).send(internalServerError)
-        }
-    );
+    setTimeout(() => {
+        res.send(initGraphData);
+    }, 300)
 }
 
 function forceUpdate(req, res, next) {
@@ -127,6 +121,58 @@ function addLink(req, res, next) {
             }
         );
     });
+}
+
+const initGraphData = {
+    id: 0,
+    data: {
+        nodes: [
+            {
+                id: '1',
+                label: 'Chrisopher F.Schuetze',
+                x: 493,
+                y: 364,
+                type: 'X',
+                editable: true
+            }, {
+                id: '2',
+                label: 'Title',
+                x: 442,
+                y: 365,
+                type: 'X',
+                editable: false
+            }, {
+                id: '3',
+                label: 'secondary school exams',
+                x: 467,
+                y: 314,
+                type: 'X',
+                editable: false
+            },{
+                id: '4',
+                label: '4',
+                x: 467,
+                y: 314,
+                type: 'X',
+                editable: false
+            },
+        ],
+        links: [
+            {
+                source: '1',
+                target: '2',
+                value: '1',
+                editable: true
+            },
+            {
+                source: '1',
+                target: '3',
+                value: '2',
+                editable: false
+            },
+        ],
+        last_index: 4
+    }
 }
 
 module.exports = {

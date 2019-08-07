@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  color: var(--MESH_MAIN_THEME_COLOR);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));
+}
+
+.error_container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: gray;
+}

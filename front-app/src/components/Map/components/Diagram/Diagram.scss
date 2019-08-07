@@ -1,0 +1,20 @@
+.node {
+  min-width: 100px;
+  min-height: 20px;
+  border-radius: 4px;
+  position: absolute;
+  background-color: black;
+  padding: 4px 8px;
+  color: white;
+}
+
+.nodes_container {
+  position: absolute;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.links_container {
+  will-change: transform;
+  backface-visibility: hidden;
+}

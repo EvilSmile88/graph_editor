@@ -11,29 +11,54 @@ class Diagram extends React.Component {
     this.canvasWidth = window.innerWidth;
     this.canvasHeight = window.innerHeight * 0.9;
     this.Graph = new GraphService(this.canvasWidth, this.canvasHeight);
+    this.state = {
+      nodes: [],
+      links: [],
+    };
   }
 
   componentDidMount() {
     const { data } = this.props;
+    this.setState(() => ({ ...data }));
+    this.update();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { nodes, links } = this.state;
+    if (prevState.nodes !== nodes || prevState.links !== links) {
+      this.update();
+    }
+  }
+
+  onLinkAdd(newLink) {
+    this.setState(prevState => ({
+      links: [...prevState.links, { ...newLink }],
+    }));
+  }
+
+  update() {
+    const data = this.state;
     this.Graph.initForce(data.nodes, data.links);
-    this.Graph.zoom(this.vis);
     this.Graph.tick(this.vis);
+    this.Graph.zoom(this.vis);
     this.Graph.drag(this.vis);
+    this.Graph.crtlHandler(this.vis, this.onLinkAdd.bind(this));
   }
 
   render() {
-    const { data } = this.props;
-    const links = data.links.map(link => {
+    const { links, nodes } = this.state;
+    const linksElements = links.map(link => {
       return (
         <LinkNode
-          key={`${link.source}_${link.target}`}
+          key={`${link.source.id || link.source}_${link.target.id ||
+            link.target}`}
           data={link}
           updateLink={this.Graph.updateLink}
         />
       );
     });
 
-    const nodes = data.nodes.map(node => {
+    const nodesElements = nodes.map(node => {
       return (
         <Node data={node} updateNode={this.Graph.updateNode} key={node.id} />
       );
@@ -59,13 +84,13 @@ class Diagram extends React.Component {
               " ",
             )}
           >
-            {links}
+            {linksElements}
           </g>
         </svg>
         <div
           className={["mesh__nodes_container", style.nodes_container].join(" ")}
         >
-          {nodes}
+          {nodesElements}
         </div>
       </div>
     );

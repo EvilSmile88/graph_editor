@@ -24,7 +24,7 @@ class LinkNode extends React.Component {
         ref={viz => {
           this.viz = viz;
         }}
-        className="link"
+        className="mesh__link"
       />
     );
   }

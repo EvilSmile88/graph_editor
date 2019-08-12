@@ -10,12 +10,19 @@
   background-color: #ff973e;
   color: white;
   font-size: 12px;
-  will-change: transform;
+  will-change: transform, border-color;
+  transition: border-color 0.3s ease-in-out;
   backface-visibility: hidden;
+  cursor: pointer;
+  border: 3px dashed transparent;
   * {
     backface-visibility: hidden;
   }
   & > div {
     position: relative;
   }
+}
+
+.mesh__node_fixed {
+  border-color: #ff4118;
 }

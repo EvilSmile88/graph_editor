@@ -16,7 +16,7 @@ class Diagram extends React.Component {
   componentDidMount() {
     const { data } = this.props;
     this.Graph.initForce(data.nodes, data.links);
-    this.Graph.zoom(this.vis, this.contentVis);
+    this.Graph.zoom(this.vis);
     this.Graph.tick(this.vis);
     this.Graph.drag(this.vis);
   }
@@ -54,11 +54,17 @@ class Diagram extends React.Component {
           width={this.canvasWidth}
           height={this.canvasHeight}
         >
-          <g className={["links_container", style.links_container].join(" ")}>
+          <g
+            className={["mesh__links_container", style.links_container].join(
+              " ",
+            )}
+          >
             {links}
           </g>
         </svg>
-        <div className={["nodes_container", style.nodes_container].join(" ")}>
+        <div
+          className={["mesh__nodes_container", style.nodes_container].join(" ")}
+        >
           {nodes}
         </div>
       </div>

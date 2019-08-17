@@ -1,15 +1,17 @@
 import React from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
+import LINK_TYPES from "Constants/linkTypes";
+import style from "./LinkNode.scss";
 
 class LinkNode extends React.Component {
   componentDidMount() {
     const { data } = this.props;
     this.d3Link = d3
-      .select(this.viz)
+      .select(this.vis)
       .datum(data)
       .call(selection =>
-        selection.attr("stroke-width", 3).attr("stroke", "bisque"),
+        selection.attr("stroke", LINK_TYPES[data.type].color || "#AEAEAE"),
       );
   }
 
@@ -20,18 +22,23 @@ class LinkNode extends React.Component {
 
   render() {
     return (
-      <line
-        ref={viz => {
-          this.viz = viz;
-        }}
-        className="mesh__link"
-      />
+      <React.Fragment>
+        <line
+          ref={vis => {
+            this.vis = vis;
+          }}
+          className={["mesh__link", style.link, style.link_default].join(" ")}
+        />
+      </React.Fragment>
     );
   }
 }
 
 LinkNode.propTypes = {
-  data: PropTypes.shape({ name: PropTypes.string }).isRequired,
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    type: PropTypes.string,
+  }).isRequired,
   updateLink: PropTypes.func.isRequired,
 };
 

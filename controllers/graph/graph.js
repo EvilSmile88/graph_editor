@@ -161,13 +161,13 @@ const initGraphData = {
             {
                 source: '1',
                 target: '2',
-                value: '1',
+                type: 'before',
                 editable: true
             },
             {
                 source: '1',
                 target: '3',
-                value: '2',
+                type: 'far',
                 editable: false
             },
         ],

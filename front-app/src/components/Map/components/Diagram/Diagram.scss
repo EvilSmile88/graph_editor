@@ -1,3 +1,12 @@
+.container {
+  position: relative;
+  &.container_drawing {
+    cursor: default;
+    * {
+      cursor: crosshair;
+    }
+  }
+}
 .node {
   min-width: 100px;
   min-height: 20px;

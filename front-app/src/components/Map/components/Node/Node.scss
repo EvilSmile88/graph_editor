@@ -13,7 +13,7 @@
   will-change: transform, border-color;
   transition: border-color 0.3s ease-in-out;
   backface-visibility: hidden;
-  cursor: pointer;
+  cursor: grab;
   border: 3px dashed transparent;
   * {
     backface-visibility: hidden;
@@ -21,8 +21,11 @@
   & > div {
     position: relative;
   }
+  &.node_fixed {
+    border-color: #ff4118;
+  }
 }
 
-.mesh__node_fixed {
-  border-color: #ff4118;
+.node_grabbing {
+  cursor: grabbing;
 }

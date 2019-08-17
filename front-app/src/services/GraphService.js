@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import CUSTOM_DIAGRAM_EVENTS from "Constants/customDiagramEvents";
-import style from "../components/Map/components/Diagram/Diagram.scss";
+import style from "Components/Map/components/Diagram/Diagram.scss";
+import LINK_TYPES from "Constants/linkTypes";
 
 class GraphService {
   constructor(width, height, vis, visNodes, visLinks) {
@@ -33,7 +34,8 @@ class GraphService {
         .attr("x1", d => d.source.x)
         .attr("y1", d => d.source.y)
         .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("y2", d => d.target.y)
+        .attr("stroke", d => LINK_TYPES[d.type].color || "#AEAEAE");
     };
   }
 
@@ -268,9 +270,9 @@ class GraphService {
       .on(`${CUSTOM_DIAGRAM_EVENTS.dragStart}.popup`, onClose);
     d3.select(this.visLinks)
       .selectAll(".mesh__link")
-      .on("click", () => {
+      .on("click", d => {
         const position = d3.mouse(this.vis);
-        onOpen({ left: position[0], top: position[1] });
+        onOpen({ left: position[0], top: position[1] }, d);
       });
   }
 }

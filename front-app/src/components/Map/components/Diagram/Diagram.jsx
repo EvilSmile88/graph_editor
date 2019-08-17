@@ -13,6 +13,7 @@ class Diagram extends React.Component {
     this.canvasHeight = window.innerHeight * 0.9;
     this.state = {
       popup: {
+        link: null,
         isOpen: false,
         position: null,
       },
@@ -21,6 +22,7 @@ class Diagram extends React.Component {
     };
     this.onPopupOpen = this.onPopupOpen.bind(this);
     this.onPopupClose = this.onPopupClose.bind(this);
+    this.onChangeLinkType = this.onChangeLinkType.bind(this);
   }
 
   componentDidMount() {
@@ -49,12 +51,31 @@ class Diagram extends React.Component {
     }));
   }
 
-  onPopupOpen(position) {
+  onChangeLinkType(type) {
+    const { links, popup } = this.state;
+    const updatedLinks = links.map(link => {
+      if (link.index === popup.link.index) {
+        return { ...link, type };
+      }
+      return link;
+    });
+    this.setState(() => ({
+      links: updatedLinks,
+      popup: {
+        isOpen: false,
+        position: null,
+        link: null,
+      },
+    }));
+  }
+
+  onPopupOpen(position, link) {
     this.Graph.disableZoom();
     this.setState(() => ({
       popup: {
         isOpen: true,
         position,
+        link,
       },
     }));
   }
@@ -67,6 +88,7 @@ class Diagram extends React.Component {
         popup: {
           isOpen: false,
           position: null,
+          link: null,
         },
       }));
     }
@@ -135,7 +157,12 @@ class Diagram extends React.Component {
             {nodesElements}
           </div>
         </div>
-        {popup.isOpen && <LinkPopup position={popup.position} />}
+        {popup.isOpen && (
+          <LinkPopup
+            onChange={this.onChangeLinkType}
+            position={popup.position}
+          />
+        )}
       </div>
     );
   }

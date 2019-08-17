@@ -1,18 +1,12 @@
 import React from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
-import LINK_TYPES from "Constants/linkTypes";
 import style from "./LinkNode.scss";
 
 class LinkNode extends React.Component {
   componentDidMount() {
     const { data } = this.props;
-    this.d3Link = d3
-      .select(this.vis)
-      .datum(data)
-      .call(selection =>
-        selection.attr("stroke", LINK_TYPES[data.type].color || "#AEAEAE"),
-      );
+    this.d3Link = d3.select(this.vis).datum(data);
   }
 
   componentDidUpdate() {

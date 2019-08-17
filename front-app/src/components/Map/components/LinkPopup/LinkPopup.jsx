@@ -6,7 +6,7 @@ import LINK_TYPES from "Constants/linkTypes";
 import style from "./LinkPopup.scss";
 
 const LinkPopup = props => {
-  const { position } = props;
+  const { position, onChange } = props;
   const ref = useRef(null);
 
   const calcTop = () => {
@@ -15,6 +15,10 @@ const LinkPopup = props => {
 
   const calcLeft = () => {
     return position.left - 46;
+  };
+
+  const onChangeLinkType = type => {
+    onChange(type);
   };
 
   return (
@@ -28,7 +32,7 @@ const LinkPopup = props => {
           {Object.keys(LINK_TYPES).map(link => {
             return (
               <li key={LINK_TYPES[link].label}>
-                <button type="button">
+                <button type="button" onClick={() => onChangeLinkType(link)}>
                   <FontAwesomeIcon
                     style={{ color: LINK_TYPES[link].color }}
                     icon={LINK_TYPES[link].icon}
@@ -50,6 +54,7 @@ LinkPopup.propTypes = {
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }).isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default LinkPopup;

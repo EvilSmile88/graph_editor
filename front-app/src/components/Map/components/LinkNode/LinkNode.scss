@@ -1,0 +1,10 @@
+.link {
+  cursor: pointer;
+  stroke-width: 3;
+  &.link_default {
+    li {
+      display: inline;
+      margin: 4px;
+    }
+  }
+}

@@ -27,6 +27,7 @@ class Diagram extends React.Component {
 
   componentDidMount() {
     const { data } = this.props;
+    this.setState(() => ({ ...data }));
     this.Graph = new GraphService(
       this.canvasWidth,
       this.canvasHeight,
@@ -34,8 +35,7 @@ class Diagram extends React.Component {
       this.visNodes,
       this.visLinks,
     );
-    this.setState(() => ({ ...data }));
-    this.update();
+    this.Graph.initForce(data.nodes, data.links);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -96,11 +96,10 @@ class Diagram extends React.Component {
 
   update() {
     const data = this.state;
-    this.Graph.initForce(data.nodes, data.links);
-    this.Graph.tick();
-    this.Graph.enableZoom();
+    this.Graph.tick(data.nodes, data.links);
     this.Graph.drag();
-    this.Graph.crtlHandler(this.onLinkAdd.bind(this));
+    this.Graph.enableZoom();
+    this.Graph.drawLinkHandler(this.onLinkAdd.bind(this));
     this.Graph.popupHandler(this.onPopupOpen, this.onPopupClose);
   }
 

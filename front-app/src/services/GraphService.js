@@ -1,14 +1,15 @@
 import * as d3 from "d3";
 import CUSTOM_DIAGRAM_EVENTS from "Constants/customDiagramEvents";
 import style from "Components/Map/components/Diagram/Diagram.scss";
-import LINK_TYPES from "Constants/linkTypes";
+import ForceLayout from "./ForceLayout";
 
-class GraphService {
+class GraphService extends ForceLayout {
   constructor(width, height, vis, visNodes, visLinks) {
+    super("#AEAEAE", vis);
     this.width = width;
     this.height = height;
-    this.scale = 1;
     this.vis = vis;
+    this.scale = 1;
     this.visNodes = visNodes;
     this.visLinks = visLinks;
     this.ctrlPressed = false;
@@ -16,47 +17,6 @@ class GraphService {
       source: null,
       dragLink: null,
     };
-    this.updateNode = selection => {
-      selection.attr("style", d => {
-        const sacelIndex = this.scale;
-        const elementSize = d3
-          .selectAll(`#mesh__node_${d.id}`)
-          .node()
-          .getBoundingClientRect();
-        return `transform: translate(${d.x -
-          elementSize.width / 2 / sacelIndex}px,${d.y -
-          elementSize.height / 2 / sacelIndex}px)`;
-      });
-    };
-
-    this.updateLink = selection => {
-      selection
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y)
-        .attr("stroke", d => LINK_TYPES[d.type].color || "#AEAEAE");
-    };
-  }
-
-  initForce(nodes, links) {
-    this.links = links;
-    this.force = d3
-      .forceSimulation(nodes)
-      .force("charge", d3.forceManyBody().strength(-50))
-      .force(
-        "link",
-        d3
-          .forceLink(links)
-          .id(d => d.id)
-          .distance(100),
-      )
-      .force("collide", d3.forceCollide(20).strength(0.5));
-  }
-
-  static updateGraph(selection, that) {
-    selection.selectAll(".mesh__node").call(that.updateNode);
-    selection.selectAll(".mesh__link").call(that.updateLink);
   }
 
   drag() {
@@ -143,14 +103,7 @@ class GraphService {
     d3.select(this.vis).on(".zoom", null);
   }
 
-  tick() {
-    const d3Graph = d3.select(this.vis);
-    this.force.on("tick", () => {
-      d3Graph.call(GraphService.updateGraph, this);
-    });
-  }
-
-  crtlHandler(onAddLink) {
+  drawLinkHandler(onAddLink) {
     const selection = d3.select(this.vis);
     const nodes = selection.selectAll(".mesh__node");
     d3.select("body").on("keydown", () => {
@@ -182,7 +135,7 @@ class GraphService {
         .insert("line", ".node")
         .attr("class", "mesh_link")
         .attr("stroke-width", 3)
-        .attr("stroke", "#AEAEAE")
+        .attr("stroke", this.defaultLinkColor || "gray")
         .attr("stroke-dasharray", 5)
         .attr("x1", d.x)
         .attr("y1", d.y)
@@ -248,7 +201,10 @@ class GraphService {
     if (source === target) return null;
     // avoid link duplicates
     const isDuplicate = !!this.links.find(link => {
-      return link.source === source && link.target === target;
+      return (
+        (link.source.id === source.id && link.target.id === target.id) ||
+        (link.source.id === target.id && link.target.id === source.id)
+      );
     });
     if (isDuplicate) {
       return null;
